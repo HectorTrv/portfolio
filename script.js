@@ -29,11 +29,6 @@ document.querySelectorAll('.headline-link').forEach(link => {
   const preview = link.querySelector('.headline-link__preview');
   if (!preview) return;
 
-  // Copy --preview-offset from the link's inline style onto the preview itself
-  // (needed after reparenting, since CSS custom props no longer inherit from link)
-  const offset = link.style.getPropertyValue('--preview-offset');
-  if (offset) preview.style.setProperty('--preview-offset', offset);
-
   // Move out of .headline-link to avoid its animation stacking context
   document.body.appendChild(preview);
 
