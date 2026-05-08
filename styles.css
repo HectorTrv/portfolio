@@ -486,8 +486,6 @@ button.nav-button {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-12);
-  padding-left: var(--spacing-21);
-  border-left: 3px solid var(--project-color, #ccc);
 }
 
 .project__body-item-title {
@@ -535,7 +533,6 @@ button.nav-button {
   }
   .project__body-item {
     gap: 8px;
-    padding-left: var(--spacing-14);
   }
   .project__body-item-title {
     font-size: 13px;
