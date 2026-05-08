@@ -24,21 +24,21 @@ document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 // ── Language toggle ─────────────────────────────────────────────────────────
 
 function applyLang(lang) {
-  // Body class drives CSS visibility of .lang-fr / .lang-en blocks
-  document.body.classList.toggle('lang-en', lang === 'en');
+  // Toggle hidden attribute on lang-fr / lang-en blocks
+  document.querySelectorAll('.lang-fr, .lang-en').forEach(el => {
+    el.hidden = !el.classList.contains('lang-' + lang);
+  });
 
-  // Short strings: elements with data-fr / data-en attributes
+  // Short strings: swap text via data-fr / data-en
   document.querySelectorAll('[data-fr][data-en]').forEach(el => {
     el.textContent = el.dataset[lang];
   });
 
-  // Toggle button label shows the *other* language
+  // Toggle button shows the other language
   const btn = document.getElementById('lang-toggle');
   if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
 
-  // Update <html lang>
   document.documentElement.lang = lang;
-
   localStorage.setItem('portfolio-lang', lang);
 }
 
@@ -46,6 +46,6 @@ const savedLang = localStorage.getItem('portfolio-lang') || 'fr';
 applyLang(savedLang);
 
 document.getElementById('lang-toggle')?.addEventListener('click', () => {
-  const current = document.body.classList.contains('lang-en') ? 'en' : 'fr';
+  const current = document.documentElement.lang === 'en' ? 'en' : 'fr';
   applyLang(current === 'fr' ? 'en' : 'fr');
 });

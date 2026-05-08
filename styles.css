@@ -137,9 +137,7 @@ button.nav-button {
   font-weight: var(--font-weight-regular);
 }
 
-.lang-en { display: none; }
-body.lang-en .lang-fr { display: none; }
-body.lang-en .lang-en { display: revert; }
+[hidden] { display: none !important; }
 
 /* ─── Nav button ─────────────────────────────────────────────────────────── */
 
