@@ -480,6 +480,7 @@ button.nav-button {
 .project__body-items {
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
 }
 
 .project__body-item {
