@@ -501,6 +501,7 @@ button.nav-button {
   line-height: 1.75;
   margin: 0;
   opacity: 0.85;
+  max-width: 520px;
 }
 
 .project__image {
