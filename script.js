@@ -22,27 +22,33 @@ const observer = new IntersectionObserver(
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
 // ── Cursor-following image preview ──────────────────────────────────────────
+// Previews are moved to <body> so they escape the animation stacking context
+// created by each .headline-link (CSS animations isolate z-index).
 
 document.querySelectorAll('.headline-link').forEach(link => {
   const preview = link.querySelector('.headline-link__preview');
   if (!preview) return;
 
-  // Offset so the preview sits top-right of the cursor
-  const OFFSET_X = 20;
-  const OFFSET_Y = 20;
+  // Copy --preview-offset from the link's inline style onto the preview itself
+  // (needed after reparenting, since CSS custom props no longer inherit from link)
+  const offset = link.style.getPropertyValue('--preview-offset');
+  if (offset) preview.style.setProperty('--preview-offset', offset);
+
+  // Move out of .headline-link to avoid its animation stacking context
+  document.body.appendChild(preview);
+
+  // Tight offset: preview sits 10px to the right, 10px above cursor tip
+  const GAP = 10;
 
   function movePreview(e) {
+    const pw = preview.offsetWidth;
     const ph = preview.offsetHeight;
-    let x = e.clientX + OFFSET_X;
-    let y = e.clientY - ph - OFFSET_Y;
+    let x = e.clientX + GAP;
+    let y = e.clientY - ph - GAP;
 
-    // Keep inside viewport
-    if (x + preview.offsetWidth > window.innerWidth - 8) {
-      x = e.clientX - preview.offsetWidth - OFFSET_X;
-    }
-    if (y < 8) {
-      y = e.clientY + OFFSET_Y;
-    }
+    // Clamp to viewport edges
+    if (x + pw > window.innerWidth - 4)  x = e.clientX - pw - GAP;
+    if (y < 4)                            y = e.clientY + GAP;
 
     preview.style.left = x + 'px';
     preview.style.top  = y + 'px';
