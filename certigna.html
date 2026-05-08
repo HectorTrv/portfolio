@@ -12,8 +12,9 @@
     <header class="site-header">
       <a class="brand-tag" href="index.html">Hector Travaillé</a>
       <nav class="site-header__nav" aria-label="Navigation principale">
-        <a class="nav-button" href="index.html#work">Travaux</a>
-        <a class="nav-button" href="index.html#about">À propos</a>
+        <a class="nav-button" href="index.html#work" data-fr="Travaux" data-en="Work">Travaux</a>
+        <a class="nav-button" href="index.html#about" data-fr="À propos" data-en="About">À propos</a>
+        <button class="nav-button" id="lang-toggle">EN</button>
       </nav>
     </header>
 
@@ -24,21 +25,26 @@
         <h1 class="project__title">Signature en ligne</h1>
       </header>
 
-      <p class="project__intro">
+      <p class="project__intro lang-fr">
         Dans un marché ultra-concurrentiel, j'ai accompagné Certigna pour concevoir leur nouvelle solution de signature électronique personnalisée. L'enjeu était de combler un retard stratégique en un temps record, tout en créant une expérience fluide qui humanise et simplifie un processus légal souvent perçu comme rigide et complexe.
+      </p>
+      <p class="project__intro lang-en">
+        In a highly competitive market, I worked with Certigna to design their new personalised electronic signature solution. The challenge was to close a strategic gap in record time, while creating a smooth experience that humanises and simplifies a legal process often perceived as rigid and complex.
       </p>
 
       <div class="project__actions">
-        <a class="nav-button" href="https://www.certigna.com/" target="_blank" rel="noopener">Voir le site →</a>
+        <a class="nav-button" href="https://www.certigna.com/" target="_blank" rel="noopener" data-fr="Voir le site →" data-en="Visit site →">Voir le site →</a>
       </div>
+
+      <hr class="section-separator" />
 
       <dl class="project__meta">
         <div>
-          <dt>Rôle</dt>
-          <dd>Designer Produit</dd>
+          <dt data-fr="Rôle" data-en="Role">Rôle</dt>
+          <dd data-fr="Designer Produit" data-en="Product Designer">Designer Produit</dd>
         </div>
         <div>
-          <dt>Année</dt>
+          <dt data-fr="Année" data-en="Year">Année</dt>
           <dd>2024</dd>
         </div>
         <div>
@@ -46,7 +52,7 @@
           <dd>Certigna</dd>
         </div>
         <div>
-          <dt>Utilisateurs</dt>
+          <dt data-fr="Utilisateurs" data-en="Users">Utilisateurs</dt>
           <dd>150 000 – 300 000</dd>
         </div>
       </dl>
@@ -59,24 +65,51 @@
         <img class="project__image" src="assets/certigna/frame06.png" alt="Certigna — frame 06" loading="lazy" />
         <img class="project__image" src="assets/certigna/frame07.png" alt="Certigna — frame 07" loading="lazy" />
         <div class="project__body">
-          <p class="project__body-heading">Défis UX &amp; Méthodologies</p>
-          <p class="project__body-intro">Concevoir un produit de confiance dans l'urgence a nécessité une approche pragmatique et focalisée sur les points de friction critiques.</p>
+          <div class="project__body-header">
+            <p class="project__body-heading" data-fr="Défis UX & Méthodologies" data-en="UX Challenges & Methodology">Défis UX &amp; Méthodologies</p>
+            <p class="project__body-intro lang-fr">Concevoir un produit de confiance dans l'urgence a nécessité une approche pragmatique et focalisée sur les points de friction critiques.</p>
+            <p class="project__body-intro lang-en">Designing a trusted product under pressure required a pragmatic approach focused on critical friction points.</p>
+          </div>
           <div class="project__body-items">
             <div class="project__body-item">
-              <p class="project__body-item-title">Continuité cross-device</p>
-              <p class="project__body-item-text">Le défi majeur résidait dans la rupture de canal. J'ai orchestré le flux utilisateur entre la signature sur desktop et la vérification d'identité sur mobile (KYC), en m'assurant que la transition soit fluide, sécurisante et sans perte de contexte pour éviter le churn.</p>
+              <p class="project__body-item-title">
+                <span class="lang-fr">Continuité cross-device</span>
+                <span class="lang-en">Cross-device continuity</span>
+              </p>
+              <p class="project__body-item-text">
+                <span class="lang-fr">Le défi majeur résidait dans la rupture de canal. J'ai orchestré le flux utilisateur entre la signature sur desktop et la vérification d'identité sur mobile (KYC), en m'assurant que la transition soit fluide, sécurisante et sans perte de contexte pour éviter le churn.</span>
+                <span class="lang-en">The main challenge was channel discontinuity. I orchestrated the user flow between desktop signing and mobile identity verification (KYC), ensuring a smooth, reassuring transition with no loss of context to prevent churn.</span>
+              </p>
             </div>
             <div class="project__body-item">
-              <p class="project__body-item-title">Recherche utilisateur en mode commando</p>
-              <p class="project__body-item-text">Malgré des délais très courts, j'ai maintenu une phase de Guerilla Testing et d'interviews utilisateurs. Cela nous a permis d'identifier les freins psychologiques liés à la signature électronique et de valider nos hypothèses de parcours en temps réel.</p>
+              <p class="project__body-item-title">
+                <span class="lang-fr">Recherche utilisateur en mode commando</span>
+                <span class="lang-en">Commando user research</span>
+              </p>
+              <p class="project__body-item-text">
+                <span class="lang-fr">Malgré des délais très courts, j'ai maintenu une phase de Guerilla Testing et d'interviews utilisateurs. Cela nous a permis d'identifier les freins psychologiques liés à la signature électronique et de valider nos hypothèses de parcours en temps réel.</span>
+                <span class="lang-en">Despite very tight deadlines, I maintained a Guerilla Testing and user interview phase. This allowed us to identify psychological barriers to electronic signing and validate our journey hypotheses in real time.</span>
+              </p>
             </div>
             <div class="project__body-item">
-              <p class="project__body-item-title">Design émotionnel &amp; Identité</p>
-              <p class="project__body-item-text">J'ai décliné l'identité de Certigna au sein de l'interface pour renforcer la légitimité du service. L'enjeu était de trouver le juste équilibre entre une esthétique moderne et les codes rassurants de la cybersécurité.</p>
+              <p class="project__body-item-title">
+                <span class="lang-fr">Design émotionnel &amp; Identité</span>
+                <span class="lang-en">Emotional design &amp; Identity</span>
+              </p>
+              <p class="project__body-item-text">
+                <span class="lang-fr">J'ai décliné l'identité de Certigna au sein de l'interface pour renforcer la légitimité du service. L'enjeu était de trouver le juste équilibre entre une esthétique moderne et les codes rassurants de la cybersécurité.</span>
+                <span class="lang-en">I adapted Certigna's identity within the interface to reinforce the service's legitimacy. The challenge was finding the right balance between a modern aesthetic and the reassuring codes of cybersecurity.</span>
+              </p>
             </div>
             <div class="project__body-item">
-              <p class="project__body-item-title">Prototypage itératif</p>
-              <p class="project__body-item-text">Pour accélérer la production sans sacrifier la qualité, j'ai travaillé par itérations rapides via des User Flows détaillés et des prototypes haute fidélité. Cette méthode a permis d'aligner instantanément les parties prenantes et de fournir des specs prêtes pour le développement (Hand-off).</p>
+              <p class="project__body-item-title">
+                <span class="lang-fr">Prototypage itératif</span>
+                <span class="lang-en">Iterative prototyping</span>
+              </p>
+              <p class="project__body-item-text">
+                <span class="lang-fr">Pour accélérer la production sans sacrifier la qualité, j'ai travaillé par itérations rapides via des User Flows détaillés et des prototypes haute fidélité. Cette méthode a permis d'aligner instantanément les parties prenantes et de fournir des specs prêtes pour le développement (Hand-off).</span>
+                <span class="lang-en">To accelerate production without sacrificing quality, I worked through rapid iterations using detailed User Flows and high-fidelity prototypes. This instantly aligned stakeholders and delivered development-ready specs (hand-off).</span>
+              </p>
             </div>
           </div>
         </div>
@@ -91,7 +124,7 @@
       <hr class="section-separator" />
 
       <nav class="project__nav" aria-label="Navigation projets">
-        <a class="project__next" href="cobalt.html">Suivant — Cobalt Design System →</a>
+        <a class="project__next" href="cobalt.html" data-fr="Suivant — Cobalt Design System →" data-en="Next — Cobalt Design System →">Suivant — Cobalt Design System →</a>
       </nav>
     </article>
 
@@ -100,7 +133,7 @@
     <footer id="about" class="site-footer">
       <a href="mailto:hectortrv.design@gmail.com">hectortrv.design@gmail.com</a>
       <div class="site-footer__links">
-        <span>MENTIONS LÉGALES</span>
+        <span data-fr="MENTIONS LÉGALES" data-en="LEGAL NOTICE">MENTIONS LÉGALES</span>
         <span>COOKIES</span>
         <span>&copy; <span id="year">2026</span> Hector Travaillé</span>
       </div>

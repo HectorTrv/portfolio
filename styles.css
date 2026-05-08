@@ -128,6 +128,21 @@ ul, li { margin: 0; padding: 0; list-style: none; }
 
 /* ─── Nav button ─────────────────────────────────────────────────────────── */
 
+/* ─── Lang toggle ────────────────────────────────────────────────────────── */
+
+button.nav-button {
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: var(--font-abcmonumentgrotesk-regular);
+  font-weight: var(--font-weight-regular);
+}
+
+.lang-en { display: none; }
+body.lang-en .lang-fr { display: none; }
+body.lang-en .lang-en { display: revert; }
+
+/* ─── Nav button ─────────────────────────────────────────────────────────── */
+
 .nav-button {
   display: inline-flex;
   align-items: center;
@@ -381,8 +396,18 @@ ul, li { margin: 0; padding: 0; list-style: none; }
 .project__body {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 0;
   padding: var(--spacing-21) 0;
+  border-top: 1px solid var(--color-ink-black);
+}
+
+.project__body-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding-bottom: var(--spacing-21);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  margin-bottom: 0;
 }
 
 .project__body-heading {
@@ -394,24 +419,24 @@ ul, li { margin: 0; padding: 0; list-style: none; }
 }
 
 .project__body-intro {
-  font-size: clamp(15px, 1.3vw, 18px);
+  font-size: clamp(15px, 1.3vw, 17px);
   line-height: 1.65;
-  max-width: 680px;
+  max-width: 640px;
   margin: 0;
-  opacity: 0.65;
 }
 
 .project__body-items {
   display: flex;
   flex-direction: column;
-  gap: 28px;
 }
 
 .project__body-item {
   display: grid;
-  grid-template-columns: clamp(140px, 18vw, 220px) 1fr;
+  grid-template-columns: clamp(160px, 20vw, 240px) 1fr;
   gap: var(--spacing-21);
-  align-items: start;
+  align-items: baseline;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-21) 0;
 }
 
 .project__body-item-title {
@@ -419,12 +444,11 @@ ul, li { margin: 0; padding: 0; list-style: none; }
   line-height: 1.55;
   opacity: 0.4;
   margin: 0;
-  padding-top: 3px;
 }
 
 .project__body-item-text {
-  font-size: clamp(14px, 1.2vw, 17px);
-  line-height: 1.7;
+  font-size: clamp(14px, 1.2vw, 16px);
+  line-height: 1.75;
   margin: 0;
 }
 
@@ -458,10 +482,12 @@ ul, li { margin: 0; padding: 0; list-style: none; }
   }
   .project__body-item {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 8px;
   }
   .project__body-item-title {
-    opacity: 0.35;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 }
 

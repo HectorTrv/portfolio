@@ -20,3 +20,32 @@ const observer = new IntersectionObserver(
 );
 
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+// ── Language toggle ─────────────────────────────────────────────────────────
+
+function applyLang(lang) {
+  // Body class drives CSS visibility of .lang-fr / .lang-en blocks
+  document.body.classList.toggle('lang-en', lang === 'en');
+
+  // Short strings: elements with data-fr / data-en attributes
+  document.querySelectorAll('[data-fr][data-en]').forEach(el => {
+    el.textContent = el.dataset[lang];
+  });
+
+  // Toggle button label shows the *other* language
+  const btn = document.getElementById('lang-toggle');
+  if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+
+  // Update <html lang>
+  document.documentElement.lang = lang;
+
+  localStorage.setItem('portfolio-lang', lang);
+}
+
+const savedLang = localStorage.getItem('portfolio-lang') || 'fr';
+applyLang(savedLang);
+
+document.getElementById('lang-toggle')?.addEventListener('click', () => {
+  const current = document.body.classList.contains('lang-en') ? 'en' : 'fr';
+  applyLang(current === 'fr' ? 'en' : 'fr');
+});

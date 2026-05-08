@@ -13,8 +13,9 @@
     <header class="site-header">
       <a class="brand-tag" href="#">Hector Travaillé</a>
       <nav class="site-header__nav" aria-label="Navigation principale">
-        <a class="nav-button" href="#work">Travaux</a>
-        <a class="nav-button" href="#about">À propos</a>
+        <a class="nav-button" href="#work" data-fr="Travaux" data-en="Work">Travaux</a>
+        <a class="nav-button" href="#about" data-fr="À propos" data-en="About">À propos</a>
+        <button class="nav-button" id="lang-toggle">EN</button>
       </nav>
     </header>
 
@@ -55,31 +56,55 @@
     <!-- ── About ─────────────────────────────────────────────────────── -->
     <section id="about" class="about-grid reveal" aria-label="À propos">
 
-      <div class="about-grid__label" aria-hidden="true">À propos</div>
+      <div class="about-grid__label" aria-hidden="true" data-fr="À propos" data-en="About">À propos</div>
 
       <div class="about-grid__content">
-        <p class="about-grid__bio">
+        <p class="about-grid__bio lang-fr">
           Designer Produit avec plus de 6 ans d'expérience, j'accompagne startups,
           scale-ups et grands groupes dans la conception de produits digitaux ambitieux,
           à la fois beaux, fonctionnels et durables.
         </p>
-        <p class="about-grid__bio">
+        <p class="about-grid__bio lang-en">
+          Product Designer with over 6 years of experience, I work with startups,
+          scale-ups and large corporations to design ambitious digital products
+          that are beautiful, functional and built to last.
+        </p>
+
+        <p class="about-grid__bio lang-fr">
           Je m'intéresse particulièrement aux problématiques complexes&nbsp;: design
           systems à grande échelle, workflows de design augmentés par l'IA,
           collaboration étroite avec les équipes engineering et R&amp;D. Ce qui
           m'anime, c'est de concevoir des produits solides, pertinents et exigeants,
           aussi bien sur le plan stratégique qu'expérientiel.
         </p>
-        <p class="about-grid__bio">
+        <p class="about-grid__bio lang-en">
+          I am particularly interested in complex challenges: large-scale design
+          systems, AI-augmented design workflows, and close collaboration with
+          engineering and R&amp;D teams. What drives me is designing products that
+          are solid, relevant and demanding — both strategically and experientially.
+        </p>
+
+        <p class="about-grid__bio lang-fr">
           En dehors du travail, vous me trouverez à la boxe, en train de coudre,
           d'explorer le design sous toutes ses formes — graphique, industriel,
           mode — ou de suivre de près les technologies émergentes. Autant de
           disciplines qui nourrissent ma manière de concevoir&nbsp;: avec soin,
           précision et intention.
         </p>
-        <p class="about-grid__bio about-grid__bio--cta">
+        <p class="about-grid__bio lang-en">
+          Outside of work, you'll find me boxing, sewing, exploring design in all
+          its forms — graphic, industrial, fashion — or closely following emerging
+          technologies. Disciplines that all feed into my approach: with care,
+          precision and intention.
+        </p>
+
+        <p class="about-grid__bio about-grid__bio--cta lang-fr">
           N'hésitez pas à me contacter pour échanger autour d'un projet.
         </p>
+        <p class="about-grid__bio about-grid__bio--cta lang-en">
+          Feel free to get in touch to discuss a project.
+        </p>
+
         <div class="about-grid__links">
           <a class="nav-button" href="mailto:hectortrv.design@gmail.com">Email</a>
           <a class="nav-button" href="https://github.com/HectorTrv" target="_blank" rel="noopener">GitHub</a>
@@ -94,7 +119,7 @@
     <footer class="site-footer">
       <a href="mailto:hectortrv.design@gmail.com">hectortrv.design@gmail.com</a>
       <div class="site-footer__links">
-        <span>MENTIONS LÉGALES</span>
+        <span data-fr="MENTIONS LÉGALES" data-en="LEGAL NOTICE">MENTIONS LÉGALES</span>
         <span>COOKIES</span>
         <span>&copy; <span id="year">2026</span> Hector Travaillé</span>
       </div>

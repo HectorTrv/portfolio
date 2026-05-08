@@ -12,8 +12,9 @@
     <header class="site-header">
       <a class="brand-tag" href="index.html">Hector Travaillé</a>
       <nav class="site-header__nav" aria-label="Navigation principale">
-        <a class="nav-button" href="index.html#work">Travaux</a>
-        <a class="nav-button" href="index.html#about">À propos</a>
+        <a class="nav-button" href="index.html#work" data-fr="Travaux" data-en="Work">Travaux</a>
+        <a class="nav-button" href="index.html#about" data-fr="À propos" data-en="About">À propos</a>
+        <button class="nav-button" id="lang-toggle">EN</button>
       </nav>
     </header>
 
@@ -24,21 +25,26 @@
         <h1 class="project__title">Cobalt Design System</h1>
       </header>
 
-      <p class="project__intro">
+      <p class="project__intro lang-fr">
         Pour répondre à l'ambition de Docaposte d'harmoniser son écosystème, j'ai conçu et déployé Cobalt, un design system unifié adopté par l'ensemble des équipes produit. Face à la diversité de dizaines de services aux besoins hétérogènes, j'ai piloté la création de ce langage commun pour garantir une cohérence esthétique et une excellence d'usage sur tout le catalogue de l'entreprise.
+      </p>
+      <p class="project__intro lang-en">
+        To meet Docaposte's ambition of harmonising its ecosystem, I designed and deployed Cobalt, a unified design system adopted by all product teams. Faced with dozens of services with heterogeneous needs, I led the creation of this common language to ensure aesthetic consistency and usage excellence across the entire company catalogue.
       </p>
 
       <div class="project__actions">
-        <a class="nav-button" href="https://zeroheight.com/9de5c3c98/p/38e9cb-cobalt-design-system" target="_blank" rel="noopener">Voir le design system →</a>
+        <a class="nav-button" href="https://zeroheight.com/9de5c3c98/p/38e9cb-cobalt-design-system" target="_blank" rel="noopener" data-fr="Voir le design system →" data-en="View design system →">Voir le design system →</a>
       </div>
+
+      <hr class="section-separator" />
 
       <dl class="project__meta">
         <div>
-          <dt>Rôle</dt>
-          <dd>Designer Produit</dd>
+          <dt data-fr="Rôle" data-en="Role">Rôle</dt>
+          <dd data-fr="Designer Produit" data-en="Product Designer">Designer Produit</dd>
         </div>
         <div>
-          <dt>Année</dt>
+          <dt data-fr="Année" data-en="Year">Année</dt>
           <dd>2018–2021</dd>
         </div>
         <div>
@@ -46,7 +52,7 @@
           <dd>Docaposte</dd>
         </div>
         <div>
-          <dt>Utilisateurs</dt>
+          <dt data-fr="Utilisateurs" data-en="Users">Utilisateurs</dt>
           <dd>~3 000</dd>
         </div>
       </dl>
@@ -63,24 +69,51 @@
         </div>
         <img class="project__image" src="assets/cobalt/image-06.png" alt="Cobalt — image 06" loading="lazy" />
         <div class="project__body">
-          <p class="project__body-heading">Ma méthodologie &amp; Impact UX</p>
-          <p class="project__body-intro">Plus qu'une simple bibliothèque de composants, Cobalt est le fruit d'une démarche d'immersion profonde pour répondre aux réalités du terrain.</p>
+          <div class="project__body-header">
+            <p class="project__body-heading" data-fr="Ma méthodologie & Impact UX" data-en="My Methodology & UX Impact">Ma méthodologie &amp; Impact UX</p>
+            <p class="project__body-intro lang-fr">Plus qu'une simple bibliothèque de composants, Cobalt est le fruit d'une démarche d'immersion profonde pour répondre aux réalités du terrain.</p>
+            <p class="project__body-intro lang-en">More than a simple component library, Cobalt is the result of a deep immersion approach to address real-world challenges.</p>
+          </div>
           <div class="project__body-items">
             <div class="project__body-item">
-              <p class="project__body-item-title">Immersion &amp; Co-conception</p>
-              <p class="project__body-item-text">Pour assurer l'adoption du système, je me suis immergé au sein de chaque équipe produit. J'ai mené des cycles d'interviews utilisateurs et des ateliers avec les designers et développeurs afin de cartographier les spécificités métiers et concevoir des composants réellement adaptés aux contraintes du monde réel.</p>
+              <p class="project__body-item-title">
+                <span class="lang-fr">Immersion &amp; Co-conception</span>
+                <span class="lang-en">Immersion &amp; Co-design</span>
+              </p>
+              <p class="project__body-item-text">
+                <span class="lang-fr">Pour assurer l'adoption du système, je me suis immergé au sein de chaque équipe produit. J'ai mené des cycles d'interviews utilisateurs et des ateliers avec les designers et développeurs afin de cartographier les spécificités métiers et concevoir des composants réellement adaptés aux contraintes du monde réel.</span>
+                <span class="lang-en">To ensure adoption, I embedded myself within each product team. I ran user interview cycles and workshops with designers and developers to map business specificities and design components truly adapted to real-world constraints.</span>
+              </p>
             </div>
             <div class="project__body-item">
-              <p class="project__body-item-title">Fiabilité dès la V1</p>
-              <p class="project__body-item-text">L'enjeu était de livrer un système immédiatement opérationnel. J'ai instauré une phase de bêta-test étendue sur plusieurs produits pilotes, permettant d'éprouver la robustesse des composants et de la stack technique avant le lancement officiel.</p>
+              <p class="project__body-item-title">
+                <span class="lang-fr">Fiabilité dès la V1</span>
+                <span class="lang-en">Reliability from V1</span>
+              </p>
+              <p class="project__body-item-text">
+                <span class="lang-fr">L'enjeu était de livrer un système immédiatement opérationnel. J'ai instauré une phase de bêta-test étendue sur plusieurs produits pilotes, permettant d'éprouver la robustesse des composants et de la stack technique avant le lancement officiel.</span>
+                <span class="lang-en">The challenge was to deliver an immediately operational system. I ran an extended beta-test phase across several pilot products, testing the robustness of components and the technical stack before the official launch.</span>
+              </p>
             </div>
             <div class="project__body-item">
-              <p class="project__body-item-title">La documentation comme pilier</p>
-              <p class="project__body-item-text">J'ai placé la documentation au centre de la stratégie de diffusion. En concevant des guides d'utilisation clairs, des principes de design explicités et des specs techniques prêtes à l'emploi, j'ai permis à chaque collaborateur de s'approprier l'outil en toute autonomie.</p>
+              <p class="project__body-item-title">
+                <span class="lang-fr">La documentation comme pilier</span>
+                <span class="lang-en">Documentation as a pillar</span>
+              </p>
+              <p class="project__body-item-text">
+                <span class="lang-fr">J'ai placé la documentation au centre de la stratégie de diffusion. En concevant des guides d'utilisation clairs, des principes de design explicités et des specs techniques prêtes à l'emploi, j'ai permis à chaque collaborateur de s'approprier l'outil en toute autonomie.</span>
+                <span class="lang-en">I placed documentation at the centre of the distribution strategy. By designing clear usage guides, explicit design principles and ready-to-use technical specs, I enabled every collaborator to take ownership of the tool independently.</span>
+              </p>
             </div>
             <div class="project__body-item">
-              <p class="project__body-item-title">Gouvernance et Cycle de vie</p>
-              <p class="project__body-item-text">J'ai orchestré la vie du design system de sa genèse jusqu'à son déploiement à grande échelle, assurant la maintenance, l'évolution des tokens et l'accompagnement des équipes dans cette transition majeure.</p>
+              <p class="project__body-item-title">
+                <span class="lang-fr">Gouvernance et Cycle de vie</span>
+                <span class="lang-en">Governance &amp; Lifecycle</span>
+              </p>
+              <p class="project__body-item-text">
+                <span class="lang-fr">J'ai orchestré la vie du design system de sa genèse jusqu'à son déploiement à grande échelle, assurant la maintenance, l'évolution des tokens et l'accompagnement des équipes dans cette transition majeure.</span>
+                <span class="lang-en">I orchestrated the design system's life from inception to large-scale deployment, ensuring maintenance, token evolution and team support through this major transition.</span>
+              </p>
             </div>
           </div>
         </div>
@@ -94,7 +127,7 @@
       <hr class="section-separator" />
 
       <nav class="project__nav" aria-label="Navigation projets">
-        <a class="project__next" href="vellum.html">Suivant — Investigation Osint →</a>
+        <a class="project__next" href="vellum.html" data-fr="Suivant — Investigation Osint →" data-en="Next — Investigation Osint →">Suivant — Investigation Osint →</a>
       </nav>
     </article>
 
@@ -103,7 +136,7 @@
     <footer id="about" class="site-footer">
       <a href="mailto:hectortrv.design@gmail.com">hectortrv.design@gmail.com</a>
       <div class="site-footer__links">
-        <span>MENTIONS LÉGALES</span>
+        <span data-fr="MENTIONS LÉGALES" data-en="LEGAL NOTICE">MENTIONS LÉGALES</span>
         <span>COOKIES</span>
         <span>&copy; <span id="year">2026</span> Hector Travaillé</span>
       </div>
