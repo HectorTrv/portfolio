@@ -451,9 +451,8 @@ button.nav-button {
 .project__body {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: var(--spacing-21);
   padding: var(--spacing-21) 0;
-  border-top: 1px solid var(--color-ink-black);
 }
 
 .project__body-header {
@@ -461,8 +460,6 @@ button.nav-button {
   flex-direction: column;
   gap: var(--spacing-12);
   padding-bottom: var(--spacing-21);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  margin-bottom: 0;
 }
 
 .project__body-heading {
@@ -486,18 +483,18 @@ button.nav-button {
 }
 
 .project__body-item {
-  display: grid;
-  grid-template-columns: clamp(160px, 20vw, 240px) 1fr;
-  gap: var(--spacing-21);
-  align-items: baseline;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding: var(--spacing-21) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding-left: var(--spacing-21);
+  border-left: 3px solid var(--project-color, #ccc);
 }
 
 .project__body-item-title {
-  font-size: 13px;
-  line-height: 1.55;
-  opacity: 0.4;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 600;
+  opacity: 1;
   margin: 0;
 }
 
@@ -505,6 +502,7 @@ button.nav-button {
   font-size: clamp(14px, 1.2vw, 16px);
   line-height: 1.75;
   margin: 0;
+  opacity: 0.85;
 }
 
 .project__image {
@@ -536,13 +534,11 @@ button.nav-button {
     flex: none;
   }
   .project__body-item {
-    grid-template-columns: 1fr;
     gap: 8px;
+    padding-left: var(--spacing-14);
   }
   .project__body-item-title {
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 13px;
   }
 }
 
