@@ -21,6 +21,45 @@ const observer = new IntersectionObserver(
 
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
+// ── Cursor-following image preview ──────────────────────────────────────────
+
+document.querySelectorAll('.headline-link').forEach(link => {
+  const preview = link.querySelector('.headline-link__preview');
+  if (!preview) return;
+
+  // Offset so the preview sits top-right of the cursor
+  const OFFSET_X = 20;
+  const OFFSET_Y = 20;
+
+  function movePreview(e) {
+    const ph = preview.offsetHeight;
+    let x = e.clientX + OFFSET_X;
+    let y = e.clientY - ph - OFFSET_Y;
+
+    // Keep inside viewport
+    if (x + preview.offsetWidth > window.innerWidth - 8) {
+      x = e.clientX - preview.offsetWidth - OFFSET_X;
+    }
+    if (y < 8) {
+      y = e.clientY + OFFSET_Y;
+    }
+
+    preview.style.left = x + 'px';
+    preview.style.top  = y + 'px';
+  }
+
+  link.addEventListener('mouseenter', e => {
+    movePreview(e);
+    preview.classList.add('is-visible');
+  });
+
+  link.addEventListener('mousemove', movePreview);
+
+  link.addEventListener('mouseleave', () => {
+    preview.classList.remove('is-visible');
+  });
+});
+
 // ── Language toggle ─────────────────────────────────────────────────────────
 
 function applyLang(lang) {

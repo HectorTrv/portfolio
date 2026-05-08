@@ -213,10 +213,53 @@ button.nav-button {
   background: var(--color-canvas-white);
   color: var(--color-ink-black);
   transition: background 260ms ease;
+  position: relative;
   /* entrance */
   opacity: 0;
   animation: fadeUp 0.55s ease both;
   animation-delay: var(--stagger, 0ms);
+}
+
+/* ─── Project image preview ──────────────────────────────────────────────── */
+
+.headline-link__preview {
+  position: fixed;
+  width: clamp(140px, 14vw, 210px);
+  height: clamp(88px, 9vw, 132px);
+  border-radius: 8px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.headline-link__preview.is-visible {
+  opacity: 1;
+}
+
+.headline-link__preview-track {
+  display: flex;
+  flex-direction: column;
+  animation: previewScroll var(--preview-speed, 3.5s) linear infinite;
+}
+
+.headline-link__preview-track img {
+  width: clamp(140px, 14vw, 210px);
+  height: clamp(88px, 9vw, 132px);
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+
+@keyframes previewScroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(var(--preview-offset)); }
+}
+
+@media (max-width: 640px) {
+  .headline-link__preview { display: none; }
 }
 
 .headline-link:hover,
