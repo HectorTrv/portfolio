@@ -7,147 +7,176 @@
     <meta name="description" content="Designer Produit avec plus de 6 ans d'expérience dans la conception de produits digitaux ambitieux." />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
+    <script>(function(){var v=sessionStorage.getItem("vt");if(v){document.documentElement.setAttribute("data-vt",v);sessionStorage.removeItem("vt");}})();</script>
   </head>
-  <body>
+  <body class="home">
 
-    <header class="site-header">
-      <a class="brand-tag" href="#">Hector Travaillé</a>
-      <nav class="site-header__nav" aria-label="Navigation principale">
-        <a class="nav-button" href="#work" data-fr="Travaux" data-en="Work">Travaux</a>
-        <a class="nav-button" href="#about" data-fr="À propos" data-en="About">À propos</a>
-        <button class="nav-button" id="lang-toggle">EN</button>
-      </nav>
+    <!-- ── Header ──────────────────────────────────────────────────────── -->
+    <header class="h-header">
+      <div class="h-header__identity">
+        <img class="h-header__avatar" src="assets/avatar.jpg" alt="Hector Travaillé" />
+        <div class="h-header__text">
+          <span class="h-header__name">Hector Travaillé</span>
+          <span class="h-header__since lang-fr">Designer depuis 2019</span>
+          <span class="h-header__since lang-en" hidden>Designer since 2019</span>
+        </div>
+      </div>
+      <div class="h-header__actions">
+        <div class="gh-wrap">
+          <a class="h-btn" href="https://github.com/HectorTrv" target="_blank" rel="noopener">GitHub</a>
+          <div class="gh-card" aria-hidden="true">
+
+            <!-- Profil -->
+            <div class="gh-card__header">
+              <img class="gh-card__avatar" id="gh-avatar" alt="HectorTrv" />
+              <div class="gh-card__identity">
+                <span class="gh-card__name" id="gh-name">HectorTrv</span>
+                <span class="gh-card__handle">@HectorTrv</span>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="gh-card__stats">
+              <span class="gh-stat">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"/>
+                </svg>
+                <strong id="gh-repos">—</strong>&nbsp;repos
+              </span>
+              <span class="gh-stat">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M2 5.5a3.5 3.5 0 115.898 2.549 5.507 5.507 0 013.034 4.084.75.75 0 11-1.482.235 4.001 4.001 0 00-7.9 0 .75.75 0 01-1.482-.236A5.507 5.507 0 013.102 8.05 3.49 3.49 0 012 5.5zM11 4a3.001 3.001 0 012.22 5.018 5.01 5.01 0 012.56 3.012.749.749 0 01-.885.954.752.752 0 01-.549-.63 3.498 3.498 0 00-2.07-2.516.75.75 0 01-.34-1.004A2.498 2.498 0 0011 4zM5.5 7a2 2 0 100-4 2 2 0 000 4z"/>
+                </svg>
+                <strong id="gh-followers">—</strong>&nbsp;followers
+              </span>
+            </div>
+
+            <!-- Séparateur -->
+            <div class="gh-card__sep"></div>
+
+            <!-- Graphe contributions -->
+            <div id="gh-graph"></div>
+
+            <!-- Légende -->
+            <div class="gh-card__legend">
+              <span>Less</span>
+              <span class="gh-lcell" style="background:#1c1c1c"></span>
+              <span class="gh-lcell" style="background:#0e4429"></span>
+              <span class="gh-lcell" style="background:#006d32"></span>
+              <span class="gh-lcell" style="background:#26a641"></span>
+              <span class="gh-lcell" style="background:#39d353"></span>
+              <span>More</span>
+            </div>
+
+          </div>
+        </div>
+        <a class="h-btn" href="https://www.linkedin.com/in/hectortravaill%C3%A9/" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+          LinkedIn
+        </a>
+        <button class="h-btn h-btn--lang" id="lang-toggle">EN</button>
+      </div>
     </header>
 
-    <hr class="section-separator" />
-
-    <!-- ── Hero ──────────────────────────────────────────────────────── -->
-    <section class="hero" aria-label="Introduction">
-      <h1 class="hero__statement">
-        Hector<br>Travaillé
+    <!-- ── Hero ────────────────────────────────────────────────────────── -->
+    <section class="h-hero" aria-label="Introduction">
+      <h1 class="h-hero__title">
+        <span class="lang-fr">J'accompagne startups et entreprises dans la création de produits digitaux solides et ambitieux.</span>
+        <span class="lang-en" hidden>I help startups and enterprises build solid and ambitious digital products.</span>
       </h1>
+      <p class="h-hero__desc lang-fr">
+        Je collabore avec des fondateurs et des équipes pour prendre les bonnes décisions de conception et construire des produits durables — beaux, fonctionnels et exigeants.
+      </p>
+      <p class="h-hero__desc lang-en" hidden>
+        I work with founders and teams to navigate core design decisions and build products that are both beautiful and built to last.
+      </p>
     </section>
 
-    <hr class="section-separator" />
+    <!-- ── Projects ────────────────────────────────────────────────────── -->
+    <section class="h-projects" aria-label="Sélection de travaux">
+      <h2 class="h-projects__label">
+        <span class="lang-fr">Projets récents</span>
+        <span class="lang-en" hidden>Recent Projects</span>
+      </h2>
+      <div class="h-projects__grid">
 
-    <!-- ── Work ──────────────────────────────────────────────────────── -->
-    <main id="work" aria-label="Sélection de travaux">
-
-      <a class="headline-link" href="certigna.html" style="--project-color: #ffd6e0">
-        <span class="headline-link__title">
-          <span class="lang-fr">Signature en ligne</span>
-          <span class="lang-en" hidden>Online Signing</span>
-        </span>
-        <span class="headline-link__tag">Certigna</span>
-        <div class="headline-link__preview" aria-hidden="true">
-          <div class="headline-link__preview-track">
-            <img src="assets/certigna/frame04.png" alt="" />
-            <img src="assets/certigna/frame05.png" alt="" />
-            <img src="assets/certigna/frame06.png" alt="" />
-            <img src="assets/certigna/frame07.png" alt="" />
+        <a class="pcard" href="certigna.html">
+          <div class="pcard__thumb">
+            <img src="assets/certigna/frame04.png" alt="Certigna — aperçu" />
           </div>
-        </div>
-      </a>
-      <hr class="section-separator" />
-
-      <a class="headline-link" href="cobalt.html" style="--project-color: #d6e4ff">
-        <span class="headline-link__title">Cobalt Design System</span>
-        <span class="headline-link__tag">Docaposte</span>
-        <div class="headline-link__preview" aria-hidden="true">
-          <div class="headline-link__preview-track">
-            <img src="assets/cobalt/image-01.png" alt="" />
-            <img src="assets/cobalt/image-02.png" alt="" />
-            <img src="assets/cobalt/image-03.png" alt="" />
-            <img src="assets/cobalt/image-06.png" alt="" />
+          <div class="pcard__info">
+            <span class="pcard__name">Certigna</span>
+            <span class="pcard__tag">Produit</span>
           </div>
-        </div>
-      </a>
-      <hr class="section-separator" />
+        </a>
 
-      <a class="headline-link" href="vellum.html" style="--project-color: #e8e6f0">
-        <span class="headline-link__title">Investigation Osint</span>
-        <span class="headline-link__tag">Open Source</span>
-        <div class="headline-link__preview" aria-hidden="true">
-          <div class="headline-link__preview-track">
-            <img src="assets/vellum/01-home.png" alt="" />
-            <img src="assets/vellum/02-cases.png" alt="" />
-            <img src="assets/vellum/17-case-detail-full.png" alt="" />
-            <img src="assets/vellum/04-graph.png" alt="" />
+        <a class="pcard" href="cobalt.html">
+          <div class="pcard__thumb">
+            <img src="assets/cobalt/image-01.png" alt="Cobalt — aperçu" />
           </div>
-        </div>
-      </a>
-      <hr class="section-separator" />
+          <div class="pcard__info">
+            <span class="pcard__name">Cobalt</span>
+            <span class="pcard__tag">Design System</span>
+          </div>
+        </a>
 
-    </main>
+        <a class="pcard" href="vellum.html">
+          <div class="pcard__thumb">
+            <img src="assets/vellum/01-home.png" alt="Vellum — aperçu" />
+          </div>
+          <div class="pcard__info">
+            <span class="pcard__name">Vellum</span>
+            <span class="pcard__tag">Open Source</span>
+          </div>
+        </a>
 
-    <!-- ── About ─────────────────────────────────────────────────────── -->
-    <section id="about" class="about-grid reveal" aria-label="À propos">
+        <a class="pcard" href="riba.html">
+          <div class="pcard__thumb">
+            <img src="assets/riba/frame-3.png" alt="Riba — aperçu" />
+          </div>
+          <div class="pcard__info">
+            <span class="pcard__name">Riba</span>
+            <span class="pcard__tag">Brand &amp; Web</span>
+          </div>
+        </a>
 
-      <div class="about-grid__label" aria-hidden="true" data-fr="À propos" data-en="About">À propos</div>
+      </div>
+    </section>
 
-      <div class="about-grid__content">
-        <p class="about-grid__bio lang-fr">
-          Designer Produit avec plus de 6 ans d'expérience, j'accompagne startups,
-          scale-ups et grands groupes dans la conception de produits digitaux ambitieux,
-          à la fois beaux, fonctionnels et durables.
-        </p>
-        <p class="about-grid__bio lang-en" hidden>
-          Product Designer with over 6 years of experience, I work with startups,
-          scale-ups and large corporations to design ambitious digital products
-          that are beautiful, functional and built to last.
-        </p>
+    <!-- ── Tabs ────────────────────────────────────────────────────────── -->
+    <section class="h-tabs-section">
+      <div class="h-segmented" role="tablist">
+        <div class="h-segmented__indicator" aria-hidden="true"></div>
+        <button class="h-segmented__btn h-segmented__btn--active" role="tab" aria-selected="true" data-tab="tab-design">Design Produit</button>
+        <button class="h-segmented__btn" role="tab" aria-selected="false" data-tab="tab-code">Code Components</button>
+      </div>
 
-        <p class="about-grid__bio lang-fr">
-          Je m'intéresse particulièrement aux problématiques complexes&nbsp;: design
-          systems à grande échelle, workflows de design augmentés par l'IA,
-          collaboration étroite avec les équipes engineering et R&amp;D. Ce qui
-          m'anime, c'est de concevoir des produits solides, pertinents et exigeants,
-          aussi bien sur le plan stratégique qu'expérientiel.
-        </p>
-        <p class="about-grid__bio lang-en" hidden>
-          I am particularly interested in complex challenges: large-scale design
-          systems, AI-augmented design workflows, and close collaboration with
-          engineering and R&amp;D teams. What drives me is designing products that
-          are solid, relevant and demanding — both strategically and experientially.
-        </p>
-
-        <p class="about-grid__bio lang-fr">
-          En dehors du travail, vous me trouverez à la boxe, en train de coudre,
-          d'explorer le design sous toutes ses formes — graphique, industriel,
-          mode — ou de suivre de près les technologies émergentes. Autant de
-          disciplines qui nourrissent ma manière de concevoir&nbsp;: avec soin,
-          précision et intention.
-        </p>
-        <p class="about-grid__bio lang-en" hidden>
-          Outside of work, you'll find me boxing, sewing, exploring design in all
-          its forms — graphic, industrial, fashion — or closely following emerging
-          technologies. Disciplines that all feed into my approach: with care,
-          precision and intention.
-        </p>
-
-        <p class="about-grid__bio about-grid__bio--cta lang-fr">
-          N'hésitez pas à me contacter pour échanger autour d'un projet.
-        </p>
-        <p class="about-grid__bio about-grid__bio--cta lang-en" hidden>
-          Feel free to get in touch to discuss a project.
-        </p>
-
-        <div class="about-grid__links">
-          <a class="nav-button" href="mailto:hectortrv.design@gmail.com">Email</a>
-          <a class="nav-button" href="https://github.com/HectorTrv" target="_blank" rel="noopener">GitHub</a>
-          <a class="nav-button" href="https://www.linkedin.com/in/hectortravaill%C3%A9/" target="_blank" rel="noopener">LinkedIn</a>
+      <div class="h-tab-content" id="tab-design" role="tabpanel">
+        <div class="h-placeholders">
+          <div class="h-placeholder h-placeholder--wide"></div>
+          <div class="h-placeholder h-placeholder--tall"></div>
+          <div class="h-placeholder h-placeholder--tall"></div>
+          <div class="h-placeholder h-placeholder--wide"></div>
         </div>
       </div>
 
+      <div class="h-tab-content" id="tab-code" role="tabpanel" hidden>
+        <div class="h-placeholders">
+          <div class="h-placeholder h-placeholder--wide"></div>
+          <div class="h-placeholder h-placeholder--tall"></div>
+          <div class="h-placeholder h-placeholder--tall"></div>
+          <div class="h-placeholder h-placeholder--wide"></div>
+        </div>
+      </div>
     </section>
 
-    <hr class="section-separator" />
-
-    <footer class="site-footer">
+    <!-- ── Footer ──────────────────────────────────────────────────────── -->
+    <footer class="h-footer">
       <a href="mailto:hectortrv.design@gmail.com">hectortrv.design@gmail.com</a>
-      <div class="site-footer__links">
-        <span data-fr="MENTIONS LÉGALES" data-en="LEGAL NOTICE">MENTIONS LÉGALES</span>
-        <span>COOKIES</span>
+      <div class="h-footer__links">
+        <a href="https://github.com/HectorTrv" target="_blank" rel="noopener">GitHub</a>
         <span>&copy; <span id="year">2026</span> Hector Travaillé</span>
       </div>
     </footer>

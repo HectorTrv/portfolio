@@ -61,6 +61,167 @@ document.querySelectorAll('.headline-link').forEach(link => {
   });
 });
 
+// ── Page transitions ─────────────────────────────────────────────────────────
+
+document.querySelectorAll('.pcard').forEach(card => {
+  card.addEventListener('click', () => sessionStorage.setItem('vt', 'open'));
+});
+
+document.querySelector('.proj-close')?.addEventListener('click', () => {
+  sessionStorage.setItem('vt', 'close');
+});
+
+// ── Tab switching ────────────────────────────────────────────────────────────
+
+function moveIndicator(activeBtn) {
+  const container = activeBtn.closest('.h-segmented');
+  const indicator = container.querySelector('.h-segmented__indicator');
+  indicator.style.width = activeBtn.offsetWidth + 'px';
+  indicator.style.transform = `translateX(${activeBtn.offsetLeft - 3}px)`;
+}
+
+document.querySelectorAll('.h-segmented__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.h-segmented__btn').forEach(b => {
+      b.classList.remove('h-segmented__btn--active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('h-segmented__btn--active');
+    btn.setAttribute('aria-selected', 'true');
+    moveIndicator(btn);
+
+    document.querySelectorAll('.h-tab-content').forEach(c => {
+      c.hidden = true;
+      c.classList.remove('is-entering');
+    });
+
+    const target = document.getElementById(btn.dataset.tab);
+    target.hidden = false;
+    void target.offsetWidth;
+    target.classList.add('is-entering');
+  });
+});
+
+// Init indicator on first active button
+const initialActive = document.querySelector('.h-segmented__btn--active');
+if (initialActive) moveIndicator(initialActive);
+
+// ── GitHub hover card ────────────────────────────────────────────────────────
+
+async function loadGitHubGraph() {
+  try {
+    const [userRes, contribRes] = await Promise.all([
+      fetch('https://api.github.com/users/HectorTrv'),
+      fetch('https://github-contributions-api.jogruber.de/v4/HectorTrv?y=last')
+    ]);
+    if (!userRes.ok || !contribRes.ok) throw new Error();
+
+    const [user, { contributions }] = await Promise.all([
+      userRes.json(),
+      contribRes.json()
+    ]);
+
+    // Avatar
+    const avatarEl = document.getElementById('gh-avatar');
+    if (avatarEl) { avatarEl.src = user.avatar_url; avatarEl.alt = user.name || user.login; }
+
+    // Nom
+    const nameEl = document.getElementById('gh-name');
+    if (nameEl) nameEl.textContent = user.name || user.login;
+
+    // Stats
+    const reposEl = document.getElementById('gh-repos');
+    if (reposEl) reposEl.textContent = user.public_repos;
+
+    const followersEl = document.getElementById('gh-followers');
+    if (followersEl) followersEl.textContent = user.followers;
+
+    renderGhGraph(contributions);
+  } catch {
+    document.querySelector('.gh-card')?.remove();
+  }
+}
+
+function renderGhGraph(contributions) {
+  const container = document.getElementById('gh-graph');
+  if (!container) return;
+
+  const COLORS = ['#181818', '#0e4429', '#006d32', '#26a641', '#39d353'];
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const CELL = 9, GAP = 2, STEP = 11;
+  const WEEKS = 25; // 25 × 11 = 275px ≤ 270 content (300 - 30px padding)
+  const LABEL_H = 15;
+
+  const data = contributions.slice(-(WEEKS * 7));
+  const firstDOW = new Date(data[0].date).getDay();
+  const padded = Array(firstDOW).fill(null).concat(data);
+
+  const weeks = [];
+  for (let i = 0; i < padded.length; i += 7) {
+    weeks.push(padded.slice(i, i + 7));
+  }
+
+  const svgW = weeks.length * STEP;
+  const svgH = LABEL_H + 7 * STEP - GAP;
+  const NS = 'http://www.w3.org/2000/svg';
+
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('width', svgW);
+  svg.setAttribute('height', svgH);
+  svg.style.display = 'block';
+  svg.style.overflow = 'visible';
+
+  // Labels de mois
+  let prevMonth = -1;
+  weeks.forEach((week, wi) => {
+    const first = week.find(d => d);
+    if (!first) return;
+    const m = new Date(first.date).getMonth();
+    if (m === prevMonth) return;
+    prevMonth = m;
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', wi * STEP);
+    t.setAttribute('y', LABEL_H - 4);
+    t.setAttribute('font-size', '8.5');
+    t.setAttribute('fill', 'rgba(255,255,255,0.35)');
+    t.setAttribute('font-family', "'Geist', system-ui, sans-serif");
+    t.textContent = MONTHS[m];
+    svg.appendChild(t);
+  });
+
+  // Cellules — rendues opaques à 0 pour l'animation au hover
+  weeks.forEach((week, wi) => {
+    const full = week.length < 7 ? week.concat(Array(7 - week.length).fill(null)) : week;
+    full.forEach((day, di) => {
+      const rect = document.createElementNS(NS, 'rect');
+      rect.setAttribute('x', wi * STEP);
+      rect.setAttribute('y', LABEL_H + di * STEP);
+      rect.setAttribute('width', CELL);
+      rect.setAttribute('height', CELL);
+      rect.setAttribute('rx', 2);
+      rect.setAttribute('fill', day ? COLORS[day.level] : COLORS[0]);
+      rect.setAttribute('opacity', '0');
+      rect.dataset.wi = wi;
+      svg.appendChild(rect);
+    });
+  });
+
+  container.appendChild(svg);
+}
+
+// Animation staggered des cellules au premier hover
+let ghAnimated = false;
+document.querySelector('.gh-wrap')?.addEventListener('mouseenter', () => {
+  if (ghAnimated) return;
+  ghAnimated = true;
+  document.querySelectorAll('#gh-graph rect').forEach(rect => {
+    const wi = parseInt(rect.dataset.wi, 10);
+    rect.style.animation = `cellReveal 280ms cubic-bezier(0.22,1,0.36,1) ${wi * 14}ms forwards`;
+  });
+});
+
+loadGitHubGraph();
+
 // ── Language toggle ─────────────────────────────────────────────────────────
 
 function applyLang(lang) {

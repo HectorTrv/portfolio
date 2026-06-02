@@ -38,6 +38,45 @@
   --project-pad-x: clamp(24px, 6vw, 120px);
 }
 
+/* ─── Page transitions ───────────────────────────────────────────────────── */
+
+/* ── View Transitions — overlay ── */
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Ouverture projet : la home recule, le projet monte */
+html[data-vt="open"]::view-transition-old(root) {
+  animation: 420ms ease both vt-bg-shrink;
+}
+html[data-vt="open"]::view-transition-new(root) {
+  animation: 500ms cubic-bezier(0.22, 1, 0.36, 1) both vt-sheet-up;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+/* Fermeture projet : le projet redescend, la home revient */
+html[data-vt="close"]::view-transition-old(root) {
+  animation: 380ms ease both vt-sheet-down;
+}
+html[data-vt="close"]::view-transition-new(root) {
+  animation: 420ms ease both vt-bg-grow;
+}
+
+@keyframes vt-bg-shrink {
+  to { transform: scale(0.94); filter: brightness(0.45); }
+}
+@keyframes vt-sheet-up {
+  from { transform: translateY(100%); }
+}
+@keyframes vt-sheet-down {
+  to { transform: translateY(100%); }
+}
+@keyframes vt-bg-grow {
+  from { transform: scale(0.94); filter: brightness(0.45); }
+}
+
 /* ─── Reset ─────────────────────────────────────────────────────────────── */
 
 *,
@@ -640,4 +679,747 @@ button.nav-button {
     padding-right: var(--spacing-10);
   }
 
+}
+
+/* ─── Geist font ────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Geist';
+  src: url('assets/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── HOME — dark theme ─────────────────────────────────────────────────── */
+
+body.home {
+  background: #0d0d0d;
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Header */
+.h-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px clamp(48px, 16vw, 240px);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.h-header__identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.h-header__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #2e2e2e;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+
+.h-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.h-header__name {
+  font-size: 13px;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.h-header__since {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1.2;
+}
+
+.h-header__actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.h-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-family: var(--font-abcmonumentgrotesk-regular);
+  font-weight: 400;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+  text-decoration: none;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.h-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.h-btn--primary {
+  background: #1a6af5;
+  color: #ffffff;
+  border-color: #1a6af5;
+}
+
+.h-btn--primary:hover {
+  background: #2f7aff;
+  border-color: #2f7aff;
+  color: #ffffff;
+}
+
+.h-btn--lang {
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: var(--font-abcmonumentgrotesk-regular);
+}
+
+/* Hero */
+.h-hero {
+  padding: 72px clamp(48px, 16vw, 240px) 60px;
+  animation: fadeIn 0.5s ease both;
+}
+
+.h-hero__title {
+  margin: 0 0 20px 0;
+  font-weight: 400;
+  font-size: clamp(22px, 4vw, 38px);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.h-hero__desc {
+  margin: 0 0 36px 0;
+  font-size: clamp(14px, 1.4vw, 16px);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.42);
+  max-width: 560px;
+}
+
+.h-stats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 0;
+}
+
+.h-stats__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1;
+}
+
+.h-stats__icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+/* Projects section */
+.h-projects {
+  padding: 0 clamp(48px, 16vw, 240px) 72px;
+  flex: 1;
+}
+
+.h-projects__label {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 14px 0;
+}
+
+.h-projects__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Project card */
+.pcard {
+  display: flex;
+  flex-direction: column;
+  background: #181818;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #ffffff;
+  transition: opacity 200ms ease;
+  text-decoration: none;
+}
+
+.pcard:hover {
+  opacity: 0.72;
+}
+
+.pcard__thumb {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #222222;
+  flex-shrink: 0;
+}
+
+.pcard__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+  display: block;
+}
+
+.pcard__info {
+  padding: 12px 14px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pcard__name {
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.pcard__tag {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+}
+
+/* Footer */
+.h-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px clamp(48px, 16vw, 240px);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.25);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.h-footer a {
+  color: rgba(255, 255, 255, 0.25);
+  transition: color 180ms ease;
+}
+
+.h-footer a:hover {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.h-footer__links {
+  display: flex;
+  gap: 20px;
+}
+
+/* Tabs section */
+.h-tabs-section {
+  padding: 0 clamp(48px, 16vw, 240px) 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.h-segmented {
+  display: inline-flex;
+  background: #1c1c1c;
+  border-radius: 100px;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.h-segmented__indicator {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  background: #ffffff;
+  border-radius: 100px;
+  pointer-events: none;
+  transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1), width 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, width;
+}
+
+.h-segmented__btn {
+  padding: 7px 18px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+  transition: color 200ms ease;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.h-segmented__btn--active {
+  color: #000000;
+}
+
+.h-segmented__btn:not(.h-segmented__btn--active):hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Placeholders */
+.h-placeholders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 120px 200px;
+  gap: 10px;
+}
+
+.h-placeholder {
+  background: #181818;
+  border-radius: 12px;
+}
+
+.h-tab-content {
+  width: 100%;
+}
+
+@keyframes tab-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.h-tab-content.is-entering {
+  animation: tab-fade-in 220ms ease forwards;
+}
+
+.h-placeholder--wide {
+  grid-column: span 2;
+  height: 120px;
+}
+
+.h-placeholder--tall {
+  height: 200px;
+}
+
+/* ─── Responsive — Home ──────────────────────────────────────────────────── */
+
+/* Large: ≥ 1440px */
+@media (min-width: 1440px) {
+  .h-header,
+  .h-hero,
+  .h-projects,
+  .h-tabs-section,
+  .h-footer {
+    padding-left: clamp(240px, 22vw, 420px);
+    padding-right: clamp(240px, 22vw, 420px);
+  }
+}
+
+/* Tablet: 641px–1023px — padding réduit pour respirer sur les écrans moyens */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .h-header,
+  .h-hero,
+  .h-projects,
+  .h-tabs-section,
+  .h-footer {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .h-projects__grid {
+    gap: 8px;
+  }
+}
+
+/* Mobile: ≤ 640px */
+@media (max-width: 640px) {
+  .h-header {
+    padding: 12px 20px;
+  }
+
+  .h-hero {
+    padding: 40px 20px 44px;
+  }
+
+  .h-projects {
+    padding: 0 20px 48px;
+  }
+
+  .h-tabs-section {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 48px;
+  }
+
+  .h-footer {
+    padding: 14px 20px;
+  }
+
+  .h-stats {
+    gap: 12px;
+  }
+}
+
+/* Petit mobile: ≤ 560px — grille à 1 colonne */
+@media (max-width: 560px) {
+  .h-projects__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .h-placeholders {
+    grid-template-columns: 1fr;
+  }
+
+  .h-placeholder--wide {
+    grid-column: span 1;
+  }
+
+  .h-placeholder--tall {
+    height: 160px;
+  }
+}
+
+/* ─── GitHub hover card ──────────────────────────────────────────────────── */
+
+.gh-wrap {
+  position: relative;
+}
+
+/* Bridge transparent pour garder le hover entre le bouton et la carte */
+.gh-wrap::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: -12px;
+  right: -12px;
+  height: 12px;
+}
+
+.gh-card {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 300px;
+  background: #0c0c0c;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1.5px solid rgba(57, 211, 83, 0.5);
+  border-radius: 14px;
+  padding: 14px 15px 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 200ms ease,
+    transform 240ms cubic-bezier(0.34, 1.5, 0.64, 1);
+  transform: translateY(-10px) scale(0.96);
+  z-index: 300;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.25),
+    0 12px 40px rgba(0,0,0,.55),
+    0 0 0 0 rgba(57,211,83,0);
+}
+
+.gh-wrap:hover .gh-card {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.25),
+    0 12px 40px rgba(0,0,0,.55),
+    0 0 24px rgba(57,211,83,.06);
+}
+
+/* ── Profil header ── */
+.gh-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 11px;
+}
+
+.gh-card__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #1c1c1c;
+  box-shadow: 0 0 0 1.5px rgba(57,211,83,.3);
+}
+
+.gh-card__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.gh-card__name {
+  display: block;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gh-card__handle {
+  display: block;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,.3);
+}
+
+/* ── Stats ── */
+.gh-card__stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 11px;
+}
+
+.gh-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,.35);
+}
+
+.gh-stat svg {
+  flex-shrink: 0;
+  color: rgba(255,255,255,.3);
+}
+
+.gh-stat strong {
+  font-weight: 500;
+  color: rgba(255,255,255,.72);
+}
+
+/* ── Séparateur ── */
+.gh-card__sep {
+  height: 1px;
+  background: rgba(255,255,255,.06);
+  margin-bottom: 11px;
+}
+
+/* ── Légende ── */
+.gh-card__legend {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 7px;
+  font-size: 9px;
+  font-family: 'Geist', system-ui, sans-serif;
+  color: rgba(255,255,255,.25);
+  justify-content: flex-end;
+}
+
+.gh-lcell {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+/* ── Animation reveal des cellules ── */
+@keyframes cellReveal {
+  from { opacity: 0; transform: scaleY(0.4); }
+  to   { opacity: 1; transform: scaleY(1); }
+}
+
+@media (hover: none) {
+  .gh-card { display: none; }
+}
+
+/* ─── Project close button ──────────────────────────────────────────────── */
+
+.proj-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 200;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 180ms ease, color 180ms ease;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.proj-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+/* ─── PROJECT PAGES — dark theme ────────────────────────────────────────── */
+
+body.dark {
+  background: #0d0d0d;
+  color: #ffffff;
+  font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-abcmonumentgrotesk-regular: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --project-pad-x: clamp(40px, 8vw, 160px);
+}
+
+body.dark .site-header {
+  padding-left: var(--project-pad-x);
+  padding-right: var(--project-pad-x);
+}
+
+body.dark .brand-tag {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+body.dark .brand-tag:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+body.dark .nav-button {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.65);
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 100px;
+}
+
+body.dark .nav-button:hover,
+body.dark .nav-button:focus-visible {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+body.dark .section-separator {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark .project__tag {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+body.dark .project__title {
+  color: #ffffff;
+}
+
+body.dark .project__intro {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+body.dark .project__meta dt {
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+}
+
+body.dark .project__meta dd {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+body.dark .project__body-heading {
+  color: rgba(255, 255, 255, 0.28);
+  opacity: 1;
+}
+
+body.dark .project__body-intro {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+body.dark .project__body-item-title {
+  color: #ffffff;
+}
+
+body.dark .project__body-item-text {
+  color: rgba(255, 255, 255, 0.48);
+  opacity: 1;
+}
+
+body.dark .project__text {
+  color: rgba(255, 255, 255, 0.42);
+  opacity: 1;
+}
+
+body.dark .project__back {
+  color: rgba(255, 255, 255, 0.32);
+  opacity: 1;
+}
+
+body.dark .project__next {
+  color: #ffffff;
+  opacity: 1;
+}
+
+body.dark .project__back:hover,
+body.dark .project__next:hover {
+  opacity: 0.45;
+}
+
+body.dark .site-footer {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+body.dark .site-footer a,
+body.dark .site-footer span {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+body.dark .site-footer a:hover,
+body.dark .site-footer a:focus-visible {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+@media (max-width: 640px) {
+  body.dark .site-header {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
