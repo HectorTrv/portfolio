@@ -222,6 +222,85 @@ document.querySelector('.gh-wrap')?.addEventListener('mouseenter', () => {
 
 loadGitHubGraph();
 
+// ── Lightbox ─────────────────────────────────────────────────────────────────
+
+(function () {
+  const images = Array.from(document.querySelectorAll('#tab-design .h-placeholder img'));
+  if (!images.length) return;
+
+  // Build DOM
+  const overlay = document.createElement('div');
+  overlay.className = 'lb-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'lb-img-wrap';
+  const img = document.createElement('img');
+  imgWrap.appendChild(img);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'lb-close';
+  closeBtn.setAttribute('aria-label', 'Fermer');
+  closeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg>`;
+
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'lb-nav lb-prev';
+  prevBtn.setAttribute('aria-label', 'Précédent');
+  prevBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,3 5,8 10,13"/></svg>`;
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'lb-nav lb-next';
+  nextBtn.setAttribute('aria-label', 'Suivant');
+  nextBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,3 11,8 6,13"/></svg>`;
+
+  const counter = document.createElement('div');
+  counter.className = 'lb-counter';
+
+  overlay.append(imgWrap, closeBtn, prevBtn, nextBtn, counter);
+  document.body.appendChild(overlay);
+
+  let current = 0;
+
+  function show(index) {
+    current = index;
+    img.src = images[current].src;
+    img.alt = images[current].alt;
+    counter.textContent = `${current + 1} / ${images.length}`;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === images.length - 1;
+  }
+
+  function open(index) {
+    show(index);
+    overlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function close() {
+    overlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  images.forEach((el, i) => el.addEventListener('click', () => open(i)));
+
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', () => show(current - 1));
+  nextBtn.addEventListener('click', () => show(current + 1));
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('is-open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft' && current > 0) show(current - 1);
+    if (e.key === 'ArrowRight' && current < images.length - 1) show(current + 1);
+  });
+})();
+
 // ── Language toggle ─────────────────────────────────────────────────────────
 
 function applyLang(lang) {
@@ -234,6 +313,11 @@ function applyLang(lang) {
   document.querySelectorAll('[data-fr][data-en]').forEach(el => {
     el.textContent = el.dataset[lang];
   });
+
+  // Page title
+  document.title = lang === 'fr'
+    ? 'Hector Travaillé — Designer Produit'
+    : 'Hector Travaillé — Product Designer';
 
   // Toggle button shows the other language
   const btn = document.getElementById('lang-toggle');

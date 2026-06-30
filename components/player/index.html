@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Video Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:          #0c8c5e;
+      --surface:        #111214;
+      --surface-muted:  #1a1b1f;
+      --surface-border: #1f2024;
+      --page-fg:        #ffffff;
+      --ring:           #0c8c5e;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #08090a;
+      color: var(--page-fg);
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PLAYER SHELL
+    ═══════════════════════════════════════════════════ */
+
+    .player {
+      display: flex;
+      flex-direction: row;
+      width: 100%; height: 100%;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(255,255,255,0.04);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       VIDEO SIDE
+    ═══════════════════════════════════════════════════ */
+
+    .video-side {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      background: #000;
+      overflow: hidden;
+    }
+
+    /* Ambient gradient */
+    .video-side__bg {
+      position: absolute; inset: 0;
+      opacity: 0.6;
+      background:
+        radial-gradient(circle at 30% 40%, rgba(12,140,94,0.25), transparent 55%),
+        radial-gradient(circle at 75% 70%, rgba(255,255,255,0.06), transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Waveform visual */
+    .video-side__wave {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+
+    /* Click surface */
+    .video-side__surface {
+      position: absolute; inset: 0; z-index: 10;
+      background: transparent; border: none; cursor: pointer; outline: none;
+    }
+    .video-side__surface:focus-visible {
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.6);
+    }
+
+    /* ── Top chrome ── */
+    .chrome-top {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+      display: flex; align-items: flex-start; justify-content: flex-end;
+      padding: 10px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.62), transparent);
+      transition: opacity 0.3s ease;
+    }
+
+    /* ── Bottom chrome ── */
+    .chrome-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 20;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 55%, transparent 100%);
+      padding-top: 44px;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Auto-hide */
+    .player--chrome-hidden .chrome-top,
+    .player--chrome-hidden .chrome-bottom { opacity: 0; pointer-events: none; }
+    .player--chrome-hidden { cursor: none; }
+
+    /* Captions overlay */
+    .captions {
+      position: absolute; left: 0; right: 0; z-index: 20;
+      display: flex; justify-content: center;
+      padding: 0 24px;
+      transition: bottom 0.3s ease;
+      pointer-events: none;
+    }
+    .captions__text {
+      max-width: 80%;
+      background: rgba(0,0,0,0.78);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 13px; font-weight: 500; line-height: 1.4;
+      color: #fff; text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SCRUBBER
+    ═══════════════════════════════════════════════════ */
+
+    .scrubber {
+      padding: 12px 16px 4px;
+      cursor: pointer;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .scrubber__track {
+      position: relative;
+      height: 4px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,0.22);
+      transition: height 0.15s ease;
+    }
+
+    .scrubber:hover .scrubber__track,
+    .scrubber--drag .scrubber__track { height: 6px; }
+
+    .scrubber__fill {
+      position: absolute; top: 0; bottom: 0; left: 0;
+      border-radius: 9999px; background: var(--green);
+      pointer-events: none;
+    }
+
+    .scrubber__hover-fill {
+      position: absolute; top: 0; bottom: 0; left: 0;
+      border-radius: 9999px; background: rgba(255,255,255,0.18);
+      pointer-events: none; display: none;
+    }
+
+    .scrubber__marker {
+      position: absolute; top: 50%; width: 1px; height: 8px;
+      background: rgba(255,255,255,0.5);
+      transform: translateY(-50%);
+      pointer-events: none; display: none;
+    }
+
+    .scrubber__thumb {
+      position: absolute; top: 50%;
+      width: 12px; height: 12px;
+      border-radius: 9999px; background: var(--green);
+      transform: translate(-50%, -50%) scale(1);
+      transition: transform 0.15s ease;
+      pointer-events: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+
+    .scrubber:hover .scrubber__thumb,
+    .scrubber--drag .scrubber__thumb { transform: translate(-50%, -50%) scale(1.5); }
+
+    .scrubber__tooltip {
+      position: absolute; top: -36px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.88);
+      color: #fff; font-size: 11px; font-weight: 500;
+      padding: 3px 8px; border-radius: 6px;
+      white-space: nowrap; pointer-events: none;
+      font-variant-numeric: tabular-nums;
+      display: none;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CONTROLS BAR
+    ═══════════════════════════════════════════════════ */
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px 12px;
+    }
+
+    .controls__left { display: flex; align-items: center; gap: 2px; min-width: 0; }
+    .controls__right { display: flex; align-items: center; gap: 2px; }
+
+    .ctrl-btn {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 9999px; border: none;
+      background: transparent; color: #fff;
+      cursor: pointer; flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .ctrl-btn:hover { background: rgba(255,255,255,0.15); }
+    .ctrl-btn:focus-visible { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 2px; }
+    .ctrl-btn svg { width: 16px; height: 16px; }
+
+    /* Play/Pause icon swap */
+    .ctrl-btn--play .icon-play,
+    .ctrl-btn--play .icon-pause {
+      position: absolute;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      display: flex;
+    }
+    .ctrl-btn--play[data-p="0"] .icon-play  { transform: scale(1);   opacity: 1; }
+    .ctrl-btn--play[data-p="0"] .icon-pause { transform: scale(0.5); opacity: 0; }
+    .ctrl-btn--play[data-p="1"] .icon-play  { transform: scale(0.5); opacity: 0; }
+    .ctrl-btn--play[data-p="1"] .icon-pause { transform: scale(1);   opacity: 1; }
+
+    /* Transcript active */
+    .ctrl-btn--transcript-active { background: rgba(12,140,94,0.28) !important; }
+
+    /* Volume group */
+    .vol-group { display: flex; align-items: center; }
+    .vol-slider-wrap {
+      width: 0; overflow: hidden; opacity: 0;
+      transition: width 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease;
+      display: flex; align-items: center;
+    }
+    .vol-group:hover .vol-slider-wrap,
+    .vol-group:focus-within .vol-slider-wrap { width: 80px; opacity: 1; }
+
+    .vol-bar-wrap {
+      position: relative;
+      width: 64px; height: 36px;
+      display: flex; align-items: center;
+      margin-left: 4px; cursor: pointer;
+    }
+    .vol-bar-track {
+      position: relative;
+      width: 100%; height: 4px;
+      border-radius: 9999px; background: rgba(255,255,255,0.22);
+      transition: height 0.15s;
+    }
+    .vol-group:hover .vol-bar-track { height: 6px; }
+    .vol-bar-fill {
+      position: absolute; top:0; bottom:0; left:0;
+      border-radius: 9999px; background: var(--green);
+    }
+    .vol-bar-thumb {
+      position: absolute; top: 50%;
+      width: 10px; height: 10px;
+      border-radius: 9999px; background: var(--green);
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.15s;
+      pointer-events: none;
+    }
+    .vol-group:hover .vol-bar-thumb { transform: translate(-50%, -50%) scale(1.1); }
+    .vol-bar-input {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+    }
+
+    /* Time display */
+    .time-display {
+      margin-left: 8px;
+      font-size: 13px; font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: rgba(255,255,255,0.9);
+      white-space: nowrap; user-select: none;
+      padding: 4px 6px;
+    }
+    .time-display__sep { margin: 0 4px; color: rgba(255,255,255,0.45); }
+    .time-display__total { color: rgba(255,255,255,0.65); }
+
+    /* ═══════════════════════════════════════════════════
+       MORE MENU DROPDOWN
+    ═══════════════════════════════════════════════════ */
+
+    .more-menu { position: relative; }
+
+    .more-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: 9999px; border: none;
+      background: transparent; color: rgba(255,255,255,0.9);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .more-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .more-btn svg { width: 16px; height: 16px; }
+
+    .dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      min-width: 200px;
+      background: #1e1f23;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      padding: 4px;
+      z-index: 50;
+      animation: dd-in 0.15s cubic-bezier(0.22,1,0.36,1) both;
+      transform-origin: top right;
+    }
+
+    @keyframes dd-in {
+      from { opacity: 0; transform: scale(0.92) translateY(-4px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0); }
+    }
+
+    .dropdown.is-hidden { display: none; }
+
+    .dd-item {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 8px 10px;
+      border-radius: 6px; border: none;
+      background: transparent; color: rgba(255,255,255,0.85);
+      font-size: 13px; font-family: inherit;
+      cursor: pointer; text-align: left;
+      transition: background 0.1s;
+    }
+    .dd-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .dd-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.75; }
+    .dd-item__label { flex: 1; }
+    .dd-item__badge {
+      font-size: 11px; font-variant-numeric: tabular-nums;
+      color: rgba(255,255,255,0.45);
+      transition: opacity 0.15s;
+    }
+    .dd-sep {
+      height: 1px; background: rgba(255,255,255,0.08);
+      margin: 3px 6px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       TRANSCRIPT PANEL
+    ═══════════════════════════════════════════════════ */
+
+    .transcript {
+      display: flex; flex-direction: column;
+      width: 280px; max-width: 40%;
+      flex-shrink: 0;
+      background: rgba(26,27,31,0.5);
+      border-left: 1px solid var(--surface-border);
+      overflow: hidden;
+    }
+
+    .transcript.is-hidden { display: none; }
+    .transcript.is-entering { animation: tr-in 280ms cubic-bezier(0.22,1,0.36,1) both; }
+    .transcript.is-leaving  { animation: tr-out 220ms cubic-bezier(0.4,0,1,1) both; }
+
+    @keyframes tr-in {
+      from { opacity: 0; transform: translateX(16px) scaleX(0.96); clip-path: inset(0 0 0 100%); }
+      60%  { opacity: 1; }
+      to   { opacity: 1; transform: translateX(0) scaleX(1); clip-path: inset(0 0 0 0); }
+    }
+    @keyframes tr-out {
+      from { opacity: 1; transform: translateX(0) scaleX(1); clip-path: inset(0 0 0 0); }
+      to   { opacity: 0; transform: translateX(16px) scaleX(0.96); clip-path: inset(0 0 0 100%); }
+    }
+
+    .tr-header {
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--surface-border);
+      flex-shrink: 0;
+    }
+
+    .tr-header__top {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .tr-title {
+      font-size: 13px; font-weight: 600;
+      color: var(--page-fg);
+    }
+
+    .tr-close {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 6px; border: none;
+      background: transparent; color: var(--page-fg);
+      opacity: 0.55; cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .tr-close:hover { background: rgba(255,255,255,0.1); opacity: 1; }
+    .tr-close svg { width: 14px; height: 14px; }
+
+    .tr-search {
+      height: 30px; width: 100%;
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      background: var(--surface);
+      padding: 0 8px;
+      font-size: 12px; font-family: inherit;
+      color: var(--page-fg);
+      outline: none;
+    }
+    .tr-search::placeholder { opacity: 0.4; }
+    .tr-search:focus { border-color: rgba(255,255,255,0.25); }
+
+    .tr-cues {
+      flex: 1; overflow-y: auto;
+      padding: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+
+    .tr-cue {
+      display: flex; align-items: flex-start; gap: 10px;
+      width: 100%; padding: 6px 8px;
+      border-radius: 6px; border: none;
+      background: transparent;
+      cursor: pointer; text-align: left;
+      transition: background 0.1s;
+    }
+    .tr-cue:hover { background: rgba(255,255,255,0.05); }
+    .tr-cue.is-active { background: rgba(255,255,255,0.1); }
+
+    .tr-cue__ts {
+      display: inline-flex; align-items: center;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px; font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: background 0.1s, color 0.1s;
+    }
+    .tr-cue.is-active .tr-cue__ts {
+      background: #fff;
+      color: var(--surface);
+    }
+
+    .tr-cue__text {
+      flex: 1; font-size: 13px; line-height: 1.5;
+      color: rgba(255,255,255,0.7);
+      transition: color 0.1s, font-weight 0.1s;
+    }
+    .tr-cue.is-active .tr-cue__text {
+      color: #fff; font-weight: 500;
+    }
+    .tr-empty {
+      padding: 16px; text-align: center;
+      font-size: 12px; color: rgba(255,255,255,0.4);
+    }
+  </style>
+</head>
+<body>
+
+<div class="player" id="player">
+
+  <!-- ══ Video side ══════════════════════════════════════ -->
+  <div class="video-side" id="videoSide">
+
+    <div class="video-side__bg"></div>
+
+    <!-- Waveform -->
+    <div class="video-side__wave" aria-hidden="true">
+      <svg width="68%" height="52%" viewBox="0 0 400 100" preserveAspectRatio="xMidYMid meet" fill="none">
+        <g opacity="0.13" stroke="#fff" stroke-linecap="round" stroke-width="2.5">
+          <line x1="8"   y1="50" x2="8"   y2="42"/><line x1="8"   y1="50" x2="8"   y2="58"/>
+          <line x1="20"  y1="50" x2="20"  y2="30"/><line x1="20"  y1="50" x2="20"  y2="70"/>
+          <line x1="32"  y1="50" x2="32"  y2="22"/><line x1="32"  y1="50" x2="32"  y2="78"/>
+          <line x1="44"  y1="50" x2="44"  y2="36"/><line x1="44"  y1="50" x2="44"  y2="64"/>
+          <line x1="56"  y1="50" x2="56"  y2="14"/><line x1="56"  y1="50" x2="56"  y2="86"/>
+          <line x1="68"  y1="50" x2="68"  y2="28"/><line x1="68"  y1="50" x2="68"  y2="72"/>
+          <line x1="80"  y1="50" x2="80"  y2="40"/><line x1="80"  y1="50" x2="80"  y2="60"/>
+          <line x1="92"  y1="50" x2="92"  y2="10"/><line x1="92"  y1="50" x2="92"  y2="90"/>
+          <line x1="104" y1="50" x2="104" y2="32"/><line x1="104" y1="50" x2="104" y2="68"/>
+          <line x1="116" y1="50" x2="116" y2="24"/><line x1="116" y1="50" x2="116" y2="76"/>
+          <line x1="128" y1="50" x2="128" y2="38"/><line x1="128" y1="50" x2="128" y2="62"/>
+          <line x1="140" y1="50" x2="140" y2="16"/><line x1="140" y1="50" x2="140" y2="84"/>
+          <line x1="152" y1="50" x2="152" y2="44"/><line x1="152" y1="50" x2="152" y2="56"/>
+          <line x1="164" y1="50" x2="164" y2="12"/><line x1="164" y1="50" x2="164" y2="88"/>
+          <line x1="176" y1="50" x2="176" y2="34"/><line x1="176" y1="50" x2="176" y2="66"/>
+          <line x1="188" y1="50" x2="188" y2="8" /><line x1="188" y1="50" x2="188" y2="92"/>
+          <line x1="200" y1="50" x2="200" y2="26"/><line x1="200" y1="50" x2="200" y2="74"/>
+          <line x1="212" y1="50" x2="212" y2="40"/><line x1="212" y1="50" x2="212" y2="60"/>
+          <line x1="224" y1="50" x2="224" y2="20"/><line x1="224" y1="50" x2="224" y2="80"/>
+          <line x1="236" y1="50" x2="236" y2="36"/><line x1="236" y1="50" x2="236" y2="64"/>
+          <line x1="248" y1="50" x2="248" y2="12"/><line x1="248" y1="50" x2="248" y2="88"/>
+          <line x1="260" y1="50" x2="260" y2="30"/><line x1="260" y1="50" x2="260" y2="70"/>
+          <line x1="272" y1="50" x2="272" y2="44"/><line x1="272" y1="50" x2="272" y2="56"/>
+          <line x1="284" y1="50" x2="284" y2="22"/><line x1="284" y1="50" x2="284" y2="78"/>
+          <line x1="296" y1="50" x2="296" y2="36"/><line x1="296" y1="50" x2="296" y2="64"/>
+          <line x1="308" y1="50" x2="308" y2="10"/><line x1="308" y1="50" x2="308" y2="90"/>
+          <line x1="320" y1="50" x2="320" y2="28"/><line x1="320" y1="50" x2="320" y2="72"/>
+          <line x1="332" y1="50" x2="332" y2="40"/><line x1="332" y1="50" x2="332" y2="60"/>
+          <line x1="344" y1="50" x2="344" y2="16"/><line x1="344" y1="50" x2="344" y2="84"/>
+          <line x1="356" y1="50" x2="356" y2="32"/><line x1="356" y1="50" x2="356" y2="68"/>
+          <line x1="368" y1="50" x2="368" y2="44"/><line x1="368" y1="50" x2="368" y2="56"/>
+          <line x1="380" y1="50" x2="380" y2="24"/><line x1="380" y1="50" x2="380" y2="76"/>
+          <line x1="392" y1="50" x2="392" y2="38"/><line x1="392" y1="50" x2="392" y2="62"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Click surface -->
+    <button class="video-side__surface" id="surface"
+      aria-label="Lire la vidéo" aria-pressed="false"
+      title="Espace / Entrée : lecture-pause • ← → : ±5 s • J / L : ±10 s"></button>
+
+    <!-- Captions overlay -->
+    <div class="captions" id="captions" style="bottom:96px; display:none;">
+      <span class="captions__text" id="captionsText"></span>
+    </div>
+
+    <!-- Top chrome -->
+    <div class="chrome-top">
+      <div class="more-menu" id="moreMenu">
+        <button class="more-btn" id="moreBtn" aria-label="Plus d'options" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+          </svg>
+        </button>
+        <div class="dropdown is-hidden" id="dropdown" role="menu">
+          <button class="dd-item" id="ddTranscript" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <line x1="21" y1="6" x2="3" y2="6"/><line x1="15" y1="12" x2="3" y2="12"/><line x1="18" y1="18" x2="3" y2="18"/>
+            </svg>
+            <span class="dd-item__label">Retranscription</span>
+            <span class="dd-item__badge" id="ddTranscriptBadge" style="opacity:0">· activée</span>
+          </button>
+          <div class="dd-sep"></div>
+          <button class="dd-item" id="ddSpeed" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2a10 10 0 1 1-6.88 2.76"/><path d="M12 6v6l4 2"/>
+            </svg>
+            <span class="dd-item__label">Vitesse</span>
+            <span class="dd-item__badge" id="ddSpeedLabel">1×</span>
+          </button>
+          <button class="dd-item" role="menuitem" onclick="void 0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span class="dd-item__label">Télécharger</span>
+          </button>
+          <button class="dd-item" role="menuitem" id="ddShare">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+            <span class="dd-item__label">Partager</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom chrome -->
+    <div class="chrome-bottom">
+
+      <!-- Scrubber -->
+      <div class="scrubber" id="scrubber">
+        <div class="scrubber__track" id="scrubberTrack">
+          <div class="scrubber__fill"      id="sFill"       style="width:0%"></div>
+          <div class="scrubber__hover-fill" id="sHoverFill" style="width:0%"></div>
+          <div class="scrubber__marker"    id="sMarker"     style="left:0%"></div>
+          <div class="scrubber__thumb"     id="sThumb"      style="left:0%"></div>
+          <div class="scrubber__tooltip"   id="sTooltip"></div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <div class="controls__left">
+
+          <!-- Play / Pause -->
+          <button class="ctrl-btn ctrl-btn--play" id="playBtn" data-p="0"
+            aria-label="Lire" title="Lire (Espace)">
+            <span class="icon-play">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </span>
+            <span class="icon-pause">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+              </svg>
+            </span>
+          </button>
+
+          <!-- Volume -->
+          <div class="vol-group">
+            <button class="ctrl-btn" id="muteBtn" aria-label="Couper le son" title="Muet (M)">
+              <svg id="volSvg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+            </button>
+            <div class="vol-slider-wrap">
+              <div class="vol-bar-wrap">
+                <div class="vol-bar-track" id="volTrack">
+                  <div class="vol-bar-fill"  id="volFill"  style="width:70%"></div>
+                  <div class="vol-bar-thumb" id="volThumb" style="left:70%"></div>
+                </div>
+                <input type="range" class="vol-bar-input" id="volInput" min="0" max="1" step="0.01" value="0.7" aria-label="Volume" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Time -->
+          <span class="time-display" aria-live="off">
+            <span id="tCurrent">00:00</span>
+            <span class="time-display__sep">/</span>
+            <span class="time-display__total">03:00</span>
+          </span>
+
+        </div>
+        <div class="controls__right">
+
+          <!-- Transcript toggle -->
+          <button class="ctrl-btn" id="trBtn" aria-label="Retranscription" title="Retranscription">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <line x1="21" y1="6" x2="3" y2="6"/><line x1="15" y1="12" x2="3" y2="12"/><line x1="18" y1="18" x2="3" y2="18"/>
+            </svg>
+          </button>
+
+          <!-- Fullscreen -->
+          <button class="ctrl-btn" id="fsBtn" aria-label="Plein écran" title="Plein écran (F)">
+            <svg id="fsSvg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+              <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+            </svg>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div><!-- /video-side -->
+
+  <!-- ══ Transcript panel ════════════════════════════════ -->
+  <div class="transcript is-hidden" id="transcript" role="region" aria-label="Retranscription">
+    <div class="tr-header">
+      <div class="tr-header__top">
+        <h2 class="tr-title">Retranscription</h2>
+        <button class="tr-close" id="trClose" aria-label="Fermer la retranscription">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <input class="tr-search" id="trSearch" type="search" placeholder="Rechercher…" aria-label="Rechercher dans la retranscription" />
+    </div>
+    <div class="tr-cues" id="trCues"></div>
+  </div>
+
+</div><!-- /player -->
+
+<script>
+  /* ─── Data ──────────────────────────────────────────── */
+  const DURATION_MS = 180_000;
+  const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+  const CUES = [
+    { t: 0,   text: "Bienvenue dans cette retransmission en direct depuis la régie principale." },
+    { t: 7,   text: "Aujourd'hui nous suivons l'ensemble des flux capteurs de la zone nord." },
+    { t: 15,  text: "La température extérieure est stable autour de dix-huit degrés." },
+    { t: 24,  text: "On observe un léger pic d'activité sur le secteur est, rien d'anormal pour l'instant." },
+    { t: 33,  text: "L'équipe technique confirme que tous les systèmes sont opérationnels." },
+    { t: 44,  text: "Vous pouvez utiliser la barre de lecture pour revenir en arrière à tout moment." },
+    { t: 54,  text: "Les timestamps à gauche sont cliquables : un clic vous repositionne directement à ce moment." },
+    { t: 66,  text: "Le sous-titre actuellement actif est mis en évidence dans la liste." },
+    { t: 77,  text: "Un aperçu du sous-titre apparaît également directement sur la vidéo." },
+    { t: 88,  text: "Nous allons maintenant passer en revue les indicateurs principaux du tableau de bord." },
+    { t: 100, text: "Premier indicateur : la latence moyenne reste sous les cent millisecondes." },
+    { t: 112, text: "Deuxième indicateur : le taux d'erreur est inférieur à zéro virgule cinq pour cent." },
+    { t: 124, text: "Troisième indicateur : la disponibilité globale est de quatre-vingt-dix-neuf virgule neuf." },
+    { t: 138, text: "Nous repasserons sur ces métriques en détail dans la prochaine séquence." },
+    { t: 152, text: "Merci de votre attention, on reste en direct pour la suite." },
+  ];
+
+  /* ─── State ─────────────────────────────────────────── */
+  let currentMs = 0, isPlaying = false, volume = 0.7, muted = false;
+  let speedIdx = 2, speed = 1;
+  let scrubDragging = false, lastRaf = null;
+  let transcriptOpen = false;
+  let hideTimer = null;
+  let activeIdx = -1;
+
+  /* ─── DOM refs ──────────────────────────────────────── */
+  const $ = id => document.getElementById(id);
+  const player   = $('player'),   surface  = $('surface'),  playBtn = $('playBtn');
+  const muteBtn  = $('muteBtn'),  volSvg   = $('volSvg'),   volInput = $('volInput');
+  const volFill  = $('volFill'),  volThumb = $('volThumb');
+  const tCurrent = $('tCurrent');
+  const scrubber = $('scrubber'), scrubTrack = $('scrubberTrack');
+  const sFill    = $('sFill'),    sHoverFill = $('sHoverFill'), sMarker = $('sMarker');
+  const sThumb   = $('sThumb'),   sTooltip   = $('sTooltip');
+  const moreBtn  = $('moreBtn'),  dropdown   = $('dropdown');
+  const ddTranscript = $('ddTranscript'), ddTranscriptBadge = $('ddTranscriptBadge');
+  const ddSpeed  = $('ddSpeed'),  ddSpeedLabel = $('ddSpeedLabel'), ddShare = $('ddShare');
+  const fsBtn    = $('fsBtn'),    fsSvg    = $('fsSvg');
+  const trBtn    = $('trBtn'),    trClose  = $('trClose');
+  const transcript = $('transcript'), trSearch = $('trSearch'), trCues = $('trCues');
+  const captions = $('captions'), captionsText = $('captionsText');
+
+  /* ─── Time format ───────────────────────────────────── */
+  function fmt(ms) {
+    const s = Math.max(0, Math.round(ms / 1000));
+    const m = Math.floor(s / 60), ss = String(s % 60).padStart(2,'0');
+    return `${String(m).padStart(2,'0')}:${ss}`;
+  }
+
+  /* ─── Volume icon ───────────────────────────────────── */
+  function updateVolIcon() {
+    const v = muted ? 0 : volume;
+    if (v === 0) {
+      volSvg.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>`;
+    } else if (v < 0.5) {
+      volSvg.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>`;
+    } else {
+      volSvg.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>`;
+    }
+    muteBtn.ariaLabel = muted ? 'Activer le son' : 'Couper le son';
+    const pct = (v * 100) + '%';
+    volFill.style.width = pct;
+    volThumb.style.left = pct;
+  }
+
+  /* ─── Fullscreen icon ───────────────────────────────── */
+  function updateFsIcon(fs) {
+    if (fs) {
+      fsSvg.innerHTML = `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="20" x2="3" y2="13"/><line x1="21" y1="3" x2="14" y2="10"/>`;
+    } else {
+      fsSvg.innerHTML = `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
+    }
+    fsBtn.ariaLabel = fs ? 'Quitter le plein écran' : 'Plein écran';
+  }
+
+  /* ─── Active cue ────────────────────────────────────── */
+  function findActiveCue() {
+    let idx = -1;
+    for (let i = 0; i < CUES.length; i++) {
+      if (CUES[i].t * 1000 <= currentMs) idx = i; else break;
+    }
+    return idx;
+  }
+
+  function updateCaptions() {
+    const idx = findActiveCue();
+    if (transcriptOpen && idx >= 0) {
+      captionsText.textContent = CUES[idx].text;
+      captions.style.display = 'flex';
+    } else {
+      captions.style.display = 'none';
+    }
+  }
+
+  /* ─── Transcript cues render ────────────────────────── */
+  function renderCues(query) {
+    const q = (query || '').trim().toLowerCase();
+    const filtered = q ? CUES.filter(c => c.text.toLowerCase().includes(q)) : CUES;
+    if (!filtered.length) {
+      trCues.innerHTML = `<p class="tr-empty">Aucun résultat pour « ${query} ».</p>`;
+      return;
+    }
+    const ai = findActiveCue();
+    trCues.innerHTML = '';
+    filtered.forEach((cue, i) => {
+      const origIdx = CUES.indexOf(cue);
+      const isActive = origIdx === ai;
+      const btn = document.createElement('button');
+      btn.className = 'tr-cue' + (isActive ? ' is-active' : '');
+      btn.setAttribute('type', 'button');
+      btn.setAttribute('aria-current', isActive ? 'true' : 'false');
+      btn.dataset.idx = origIdx;
+      btn.innerHTML = `<span class="tr-cue__ts">${fmt(cue.t * 1000)}</span><span class="tr-cue__text">${cue.text}</span>`;
+      btn.addEventListener('click', () => { currentMs = cue.t * 1000; syncScrubber(); });
+      trCues.appendChild(btn);
+      if (isActive) setTimeout(() => btn.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 0);
+    });
+  }
+
+  function syncTranscriptActive() {
+    const idx = findActiveCue();
+    if (idx === activeIdx) return;
+    activeIdx = idx;
+    trCues.querySelectorAll('.tr-cue').forEach(el => {
+      const match = parseInt(el.dataset.idx) === idx;
+      el.classList.toggle('is-active', match);
+      el.setAttribute('aria-current', match ? 'true' : 'false');
+      if (match) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  }
+
+  /* ─── Transcript open/close ─────────────────────────── */
+  function openTranscript() {
+    transcriptOpen = true;
+    transcript.classList.remove('is-hidden', 'is-leaving');
+    transcript.classList.add('is-entering');
+    trBtn.classList.add('ctrl-btn--transcript-active');
+    ddTranscriptBadge.style.opacity = '0.7';
+    renderCues(trSearch.value);
+    updateCaptions();
+  }
+
+  function closeTranscript() {
+    transcriptOpen = false;
+    transcript.classList.remove('is-entering');
+    transcript.classList.add('is-leaving');
+    transcript.addEventListener('animationend', () => {
+      transcript.classList.add('is-hidden');
+      transcript.classList.remove('is-leaving');
+    }, { once: true });
+    trBtn.classList.remove('ctrl-btn--transcript-active');
+    ddTranscriptBadge.style.opacity = '0';
+    captions.style.display = 'none';
+  }
+
+  function toggleTranscript() { transcriptOpen ? closeTranscript() : openTranscript(); }
+
+  /* ─── Auto-hide chrome ──────────────────────────────── */
+  function reveal() {
+    player.classList.remove('player--chrome-hidden');
+    clearTimeout(hideTimer);
+    if (isPlaying) hideTimer = setTimeout(() => player.classList.add('player--chrome-hidden'), 2600);
+  }
+
+  /* ─── Play/Pause ────────────────────────────────────── */
+  function togglePlay() {
+    if (currentMs >= DURATION_MS) currentMs = 0;
+    isPlaying = !isPlaying;
+    lastRaf = null;
+    playBtn.dataset.p = isPlaying ? '1' : '0';
+    playBtn.ariaLabel = isPlaying ? 'Pause' : 'Lire';
+    surface.ariaPressed = isPlaying ? 'true' : 'false';
+    reveal();
+  }
+
+  /* ─── Scrubber helpers ──────────────────────────────── */
+  function scrubPct(clientX) {
+    const r = scrubTrack.getBoundingClientRect();
+    return Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+  }
+
+  function syncScrubber() {
+    const pct = DURATION_MS > 0 ? (currentMs / DURATION_MS) * 100 : 0;
+    sFill.style.width = pct + '%';
+    sThumb.style.left = pct + '%';
+    tCurrent.textContent = fmt(currentMs);
+  }
+
+  /* ─── RAF loop ──────────────────────────────────────── */
+  function tick(t) {
+    if (lastRaf !== null && isPlaying && !scrubDragging) {
+      const dt = Math.min(250, Math.max(0, (t - lastRaf) * speed));
+      currentMs = Math.min(DURATION_MS, currentMs + dt);
+      if (currentMs >= DURATION_MS) { isPlaying = false; playBtn.dataset.p = '0'; }
+    }
+    lastRaf = t;
+    syncScrubber();
+    if (transcriptOpen) syncTranscriptActive();
+    updateCaptions();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  /* ─── Events ─────────────────────────────────────────── */
+  surface.addEventListener('click', togglePlay);
+  playBtn.addEventListener('click', togglePlay);
+
+  muteBtn.addEventListener('click', () => {
+    muted = !muted;
+    volInput.value = muted ? 0 : volume;
+    updateVolIcon();
+  });
+
+  volInput.addEventListener('input', e => {
+    volume = parseFloat(e.target.value);
+    muted = volume === 0;
+    updateVolIcon();
+  });
+
+  /* Scrubber */
+  scrubber.addEventListener('pointermove', e => {
+    const ratio = scrubPct(e.clientX);
+    const ms = ratio * DURATION_MS;
+    sHoverFill.style.width = (ratio * 100) + '%';
+    sHoverFill.style.display = 'block';
+    sMarker.style.left = (ratio * 100) + '%';
+    sMarker.style.display = 'block';
+    sTooltip.style.left = (ratio * 100) + '%';
+    sTooltip.textContent = fmt(ms);
+    sTooltip.style.display = 'block';
+    if (scrubDragging) { currentMs = ms; syncScrubber(); }
+  });
+
+  scrubber.addEventListener('pointerleave', () => {
+    if (!scrubDragging) {
+      sHoverFill.style.display = sMarker.style.display = sTooltip.style.display = 'none';
+    }
+  });
+
+  scrubber.addEventListener('pointerdown', e => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    scrubber.setPointerCapture(e.pointerId);
+    scrubDragging = true;
+    scrubber.classList.add('scrubber--drag');
+    currentMs = scrubPct(e.clientX) * DURATION_MS;
+    syncScrubber();
+  });
+
+  scrubber.addEventListener('pointerup', e => {
+    try { scrubber.releasePointerCapture(e.pointerId); } catch {}
+    scrubDragging = false;
+    scrubber.classList.remove('scrubber--drag');
+    sHoverFill.style.display = sMarker.style.display = sTooltip.style.display = 'none';
+  });
+
+  scrubber.addEventListener('pointercancel', () => {
+    scrubDragging = false;
+    scrubber.classList.remove('scrubber--drag');
+  });
+
+  /* More menu */
+  moreBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = !dropdown.classList.contains('is-hidden');
+    dropdown.classList.toggle('is-hidden', open);
+    moreBtn.setAttribute('aria-expanded', !open);
+  });
+
+  document.addEventListener('click', e => {
+    if (!$('moreMenu').contains(e.target)) {
+      dropdown.classList.add('is-hidden');
+      moreBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  ddTranscript.addEventListener('click', () => {
+    dropdown.classList.add('is-hidden');
+    toggleTranscript();
+  });
+
+  ddSpeed.addEventListener('click', () => {
+    speedIdx = (speedIdx + 1) % SPEEDS.length;
+    speed = SPEEDS[speedIdx];
+    const label = speed === 1 ? '1×' : speed + '×';
+    ddSpeedLabel.textContent = label;
+  });
+
+  ddShare.addEventListener('click', () => {
+    navigator.share?.({ title: 'Player', url: location.href }).catch(() => {});
+  });
+
+  /* Transcript controls */
+  trBtn.addEventListener('click', toggleTranscript);
+  trClose.addEventListener('click', closeTranscript);
+  trSearch.addEventListener('input', e => renderCues(e.target.value));
+
+  /* Fullscreen */
+  fsBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) player.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  });
+  document.addEventListener('fullscreenchange', () => updateFsIcon(!!document.fullscreenElement));
+
+  /* Chrome reveal */
+  player.addEventListener('pointermove', reveal);
+  player.addEventListener('pointerdown', reveal);
+  player.addEventListener('pointerleave', () => {
+    clearTimeout(hideTimer);
+    if (isPlaying) player.classList.add('player--chrome-hidden');
+  });
+
+  /* Keyboard */
+  document.addEventListener('keydown', e => {
+    if (e.target === trSearch) return;
+    switch (e.key) {
+      case ' ': case 'k': case 'K': e.preventDefault(); togglePlay(); break;
+      case 'ArrowLeft':  e.preventDefault(); currentMs = Math.max(0, currentMs - (e.shiftKey ? 30000 : 5000)); break;
+      case 'ArrowRight': e.preventDefault(); currentMs = Math.min(DURATION_MS, currentMs + (e.shiftKey ? 30000 : 5000)); break;
+      case 'j': case 'J': e.preventDefault(); currentMs = Math.max(0, currentMs - 10000); break;
+      case 'l': case 'L': e.preventDefault(); currentMs = Math.min(DURATION_MS, currentMs + 10000); break;
+      case 'm': case 'M': e.preventDefault(); muted = !muted; updateVolIcon(); break;
+      case 'f': case 'F': e.preventDefault(); fsBtn.click(); break;
+      case 'Escape': if (transcriptOpen) closeTranscript(); break;
+    }
+  });
+
+  /* Captions position when chrome visible/hidden */
+  const chromeObs = new MutationObserver(() => {
+    const hidden = player.classList.contains('player--chrome-hidden');
+    captions.style.bottom = hidden ? '24px' : '96px';
+  });
+  chromeObs.observe(player, { attributes: true, attributeFilter: ['class'] });
+
+  /* ─── Init ──────────────────────────────────────────── */
+  updateVolIcon();
+</script>
+</body>
+</html>
