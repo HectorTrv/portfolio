@@ -316,8 +316,8 @@ function applyLang(lang) {
 
   // Page title
   document.title = lang === 'fr'
-    ? 'Hector Travaillé — Designer Produit'
-    : 'Hector Travaillé — Product Designer';
+    ? 'Hector Travaillé · Designer Produit'
+    : 'Hector Travaillé · Product Designer';
 
   // Toggle button shows the other language
   const btn = document.getElementById('lang-toggle');
