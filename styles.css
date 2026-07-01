@@ -65,7 +65,7 @@ html[data-vt="close"]::view-transition-new(root) {
 }
 
 @keyframes vt-bg-shrink {
-  to { transform: scale(0.94); filter: brightness(0.45); }
+  to { opacity: 0; filter: brightness(0.3); }
 }
 @keyframes vt-sheet-up {
   from { transform: translateY(100%); }
@@ -74,7 +74,7 @@ html[data-vt="close"]::view-transition-new(root) {
   to { transform: translateY(100%); }
 }
 @keyframes vt-bg-grow {
-  from { transform: scale(0.94); filter: brightness(0.45); }
+  from { opacity: 0; filter: brightness(0.3); }
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────────────── */
@@ -84,6 +84,14 @@ html[data-vt="close"]::view-transition-new(root) {
 *::after { box-sizing: border-box; }
 
 html, body { margin: 0; padding: 0; }
+
+html:has(body.dark) {
+  background: #0d0d0d;
+}
+
+::view-transition {
+  background: #0d0d0d;
+}
 
 body {
   background: var(--color-canvas-white);
@@ -553,7 +561,7 @@ button.nav-button {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .project__image-row {
@@ -570,6 +578,9 @@ button.nav-button {
 }
 
 @media (max-width: 640px) {
+  :root {
+    --project-pad-x: 28px;
+  }
   .project__image-row {
     flex-direction: column;
   }
@@ -581,7 +592,13 @@ button.nav-button {
     gap: 8px;
   }
   .project__body-item-title {
-    font-size: 13px;
+    font-size: 15px;
+  }
+  .project__body-item-text {
+    font-size: 16px;
+  }
+  .project__body-intro {
+    font-size: 17px;
   }
 }
 
@@ -703,6 +720,7 @@ body.home {
   display: flex;
   flex-direction: column;
   font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --project-pad-x: clamp(40px, 8vw, 160px);
 }
 
 /* Header */
@@ -710,7 +728,7 @@ body.home {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px clamp(48px, 16vw, 240px);
+  padding: 16px var(--project-pad-x);
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -781,11 +799,6 @@ body.home {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.gh-wrap .h-btn:hover {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.65);
-  border-color: rgba(255, 255, 255, 0.15);
-}
 
 .h-btn--primary {
   background: #1a6af5;
@@ -807,7 +820,7 @@ body.home {
 
 /* Hero */
 .h-hero {
-  padding: 72px clamp(48px, 16vw, 240px) 60px;
+  padding: 72px var(--project-pad-x) 60px;
   animation: fadeIn 0.5s ease both;
 }
 
@@ -852,7 +865,7 @@ body.home {
 
 /* Projects section */
 .h-projects {
-  padding: 0 clamp(48px, 16vw, 240px) 72px;
+  padding: 0 var(--project-pad-x) 72px;
   flex: 1;
 }
 
@@ -985,7 +998,7 @@ body.home {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px clamp(48px, 16vw, 240px);
+  padding: 14px var(--project-pad-x);
   border-top: 1px solid rgba(255, 255, 255, 0.07);
   font-size: 12px;
   color: rgba(255, 255, 255, 0.25);
@@ -1009,7 +1022,7 @@ body.home {
 
 /* Tabs section */
 .h-tabs-section {
-  padding: 0 clamp(48px, 16vw, 240px) 72px;
+  padding: 0 var(--project-pad-x) 72px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1236,25 +1249,25 @@ body.home {
 /* Mobile: ≤ 640px */
 @media (max-width: 640px) {
   .h-header {
-    padding: 12px 20px;
+    padding: 12px 28px;
   }
 
   .h-hero {
-    padding: 40px 20px 44px;
+    padding: 40px 28px 44px;
   }
 
   .h-projects {
-    padding: 0 20px 48px;
+    padding: 0 28px 48px;
   }
 
   .h-tabs-section {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 28px;
+    padding-right: 28px;
     padding-bottom: 48px;
   }
 
   .h-footer {
-    padding: 14px 20px;
+    padding: 14px 28px;
   }
 
   .h-stats {
