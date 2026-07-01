@@ -1567,7 +1567,7 @@ body.dark .project__meta dd {
 }
 
 body.dark .project__body-heading {
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.95);
   opacity: 1;
 }
 
