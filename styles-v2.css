@@ -654,6 +654,16 @@ button.nav-button {
   margin-top: var(--spacing-21);
 }
 
+/* ─── Large desktop — project page scaling (≥ 1440px) ───────────────────── */
+
+br.title-br { display: none; }
+
+@media (min-width: 90rem) {
+  br.title-br { display: block; }
+  .project__meta { font-size: 1rem; }
+  .project__meta dt { font-size: 0.75rem; }
+}
+
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 56.25rem) {
@@ -1622,5 +1632,15 @@ body.dark .site-footer a:focus-visible {
   body.dark .site-header {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+  }
+}
+
+/* ─── Large desktop — project page scaling (≥ 1440px) ───────────────────── */
+
+@media (min-width: 90rem) {
+  .nav-button,
+  body.dark .nav-button {
+    font-size: 1.0625rem;
+    padding: 0.9375rem 1.625rem;
   }
 }
