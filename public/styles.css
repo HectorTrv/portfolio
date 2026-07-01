@@ -454,7 +454,7 @@ button.nav-button {
 
 .project__intro {
   padding: var(--spacing-21) var(--project-pad-x) var(--spacing-21);
-  max-width: 51.25rem;
+  max-width: 72rem;
   font-size: clamp(1.125rem, 2vw, 1.625rem);
   line-height: 1.55;
   margin: 0;
