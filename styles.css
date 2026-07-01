@@ -321,6 +321,7 @@ button.nav-button {
 
 @media (max-width: 640px) {
   .headline-link__preview { display: none; }
+  .br-desktop { display: none; }
 }
 
 .headline-link:hover,
