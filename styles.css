@@ -1599,6 +1599,32 @@ body.home {
 
 /* ─── Project close button ──────────────────────────────────────────────── */
 
+.proj-lang {
+  position: fixed;
+  top: 20px;
+  right: 68px;
+  z-index: 200;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 11px;
+  font-family: var(--font-abcmonumentgrotesk-regular);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.proj-lang:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
 .proj-close {
   position: fixed;
   top: 20px;
