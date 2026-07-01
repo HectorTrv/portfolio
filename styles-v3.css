@@ -660,8 +660,18 @@ br.title-br { display: none; }
 
 @media (min-width: 90rem) {
   br.title-br { display: block; }
-  .project__meta { font-size: 1rem; }
-  .project__meta dt { font-size: 0.75rem; }
+
+  .project__meta {
+    font-size: 1.25rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    gap: 2.5rem;
+  }
+
+  .project__meta dt {
+    font-size: 0.8125rem;
+    margin-bottom: 0.625rem;
+  }
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
