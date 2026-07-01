@@ -38,7 +38,7 @@
       border: 1px solid var(--surface-border);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(255,255,255,0.04);
+      box-shadow: 0 2px 8px rgba(255,255,255,0.09);
     }
 
     /* ═══════════════════════════════════════════════════
@@ -53,21 +53,22 @@
       overflow: hidden;
     }
 
-    /* Ambient gradient */
+    /* Checkerboard placeholder */
     .video-side__bg {
       position: absolute; inset: 0;
-      opacity: 0.6;
-      background:
-        radial-gradient(circle at 30% 40%, rgba(12,140,94,0.25), transparent 55%),
-        radial-gradient(circle at 75% 70%, rgba(255,255,255,0.06), transparent 60%);
+      background-image:
+        linear-gradient(45deg, rgba(255,255,255,0.09) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.09) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.09) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.09) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
       pointer-events: none;
     }
 
-    /* Waveform visual */
+    /* Waveform visual (hidden) */
     .video-side__wave {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
+      display: none;
     }
 
     /* Click surface */
