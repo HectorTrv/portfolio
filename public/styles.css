@@ -522,7 +522,7 @@ button.nav-button {
 }
 
 .project__body-intro {
-  font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
+  font-size: clamp(0.9375rem, 1.3vw, 1.1875rem);
   line-height: 1.65;
   margin: 0;
 }
@@ -542,7 +542,7 @@ button.nav-button {
 }
 
 .project__body-item-title {
-  font-size: 0.9375rem;
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
   line-height: 1.4;
   font-weight: 600;
   opacity: 0.85;
@@ -550,7 +550,7 @@ button.nav-button {
 }
 
 .project__body-item-text {
-  font-size: clamp(0.875rem, 1.2vw, 1rem);
+  font-size: clamp(0.875rem, 1.2vw, 1.125rem);
   line-height: 1.75;
   margin: 0;
   opacity: 0.85;
