@@ -596,7 +596,7 @@ button.nav-button {
     font-size: 15px;
   }
   .project__body-item-text {
-    font-size: 16px;
+    font-size: 17px;
   }
   .project__body-intro {
     font-size: 17px;
@@ -1735,7 +1735,7 @@ body.dark .project__body-item-title {
 }
 
 body.dark .project__body-item-text {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.88);
   opacity: 1;
 }
 
