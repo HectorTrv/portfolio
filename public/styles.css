@@ -510,6 +510,7 @@ button.nav-button {
   padding-bottom: var(--spacing-21);
   margin: 0 auto;
   max-width: 32.5rem;
+  width: 100%;
 }
 
 .project__body-heading {
@@ -523,7 +524,6 @@ button.nav-button {
 .project__body-intro {
   font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
   line-height: 1.65;
-  max-width: 40rem;
   margin: 0;
 }
 
